@@ -4,42 +4,41 @@ import 'package:flutter/foundation.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:view_model/view_model.dart';
 
-class TestViewModel<State, SideEffect> extends Mock
-    implements ViewModel<State, SideEffect> {
+class TestViewModel<State, Event> extends Mock
+    implements ViewModel<State, Event> {
   TestViewModel();
 
   late State _state;
 
-  late SideEffect _sideEffect;
+  late Event _event;
 
   bool _stateEmitted = false;
 
   final _stateController = StreamController<State>.broadcast();
-  final _sideEffectController = StreamController<SideEffect>.broadcast();
+  final _eventController = StreamController<Event>.broadcast();
 
   void init({
     required State initialState,
-    required SideEffect initialSideEffect,
+    required Event initialEvent,
   }) {
     _state = initialState;
-    _sideEffect = initialSideEffect;
+    _event = initialEvent;
   }
 
   @override
   Stream<State> get stateStream => _stateController.stream;
 
   @override
-  Stream<SideEffect> get sideEffectStream => _sideEffectController.stream;
+  Stream<Event> get eventStream => _eventController.stream;
 
   @override
   State get state => _state;
 
   @override
-  SideEffect get sideEffect => _sideEffect;
+  Event get event => _event;
 
   @override
-  bool get isClosed =>
-      _stateController.isClosed || _sideEffectController.isClosed;
+  bool get isClosed => _stateController.isClosed || _eventController.isClosed;
 
   @override
   void emitState(State state) {
@@ -57,13 +56,13 @@ class TestViewModel<State, SideEffect> extends Mock
   }
 
   @override
-  void emitSideEffect(SideEffect sideEffect) {
+  void emitEvent(Event event) {
     try {
       if (isClosed) {
         debugPrint('Cannot emit new side effects after calling close');
       }
-      _sideEffect = sideEffect;
-      _sideEffectController.add(sideEffect);
+      _event = event;
+      _eventController.add(event);
     } catch (error) {
       rethrow;
     }
@@ -72,6 +71,6 @@ class TestViewModel<State, SideEffect> extends Mock
   @override
   Future<void> close() async {
     await _stateController.close();
-    await _sideEffectController.close();
+    await _eventController.close();
   }
 }

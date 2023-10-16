@@ -5,61 +5,59 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
-class ViewModelConsumer<VM extends ViewModel<STATE, SIDE_EFFECT>, STATE,
-    SIDE_EFFECT> extends StatefulWidget {
+class ViewModelConsumer<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
+    extends StatefulWidget {
   const ViewModelConsumer({
     Key? key,
     required this.builder,
     this.viewModel,
-    this.onSideEffect,
+    this.onEvent,
     this.buildWhen,
-    this.reactToSideEffectWhen,
+    this.reactToEventWhen,
   }) : super(key: key);
 
   final VM? viewModel;
 
   final Widget Function(BuildContext context, STATE state) builder;
 
-  final void Function(BuildContext context, SIDE_EFFECT sideEffect)?
-      onSideEffect;
+  final void Function(BuildContext context, EVENT event)? onEvent;
 
   final bool Function(STATE previous, STATE current)? buildWhen;
 
-  final bool Function(SIDE_EFFECT previous, SIDE_EFFECT current)?
-      reactToSideEffectWhen;
+  final bool Function(EVENT previous, EVENT current)? reactToEventWhen;
 
   @override
-  State<ViewModelConsumer<VM, STATE, SIDE_EFFECT>> createState() =>
-      _ViewModelConsumerState<VM, STATE, SIDE_EFFECT>();
+  State<ViewModelConsumer<VM, STATE, EVENT>> createState() =>
+      _ViewModelConsumerState<VM, STATE, EVENT>();
 }
 
-class _ViewModelConsumerState<VM extends ViewModel<STATE, SIDE_EFFECT>, STATE,
-    SIDE_EFFECT> extends State<ViewModelConsumer<VM, STATE, SIDE_EFFECT>> {
+class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
+    extends State<ViewModelConsumer<VM, STATE, EVENT>> {
   late VM _viewModel;
-  StreamSubscription<SIDE_EFFECT>? _sideEffectSubscription;
+  StreamSubscription<EVENT>? _eventSubscription;
   StreamSubscription<STATE>? _stateSubscription;
   late STATE _state;
-  late SIDE_EFFECT _sideEffect;
+  late EVENT _event;
 
   @override
   void initState() {
     super.initState();
     _viewModel = widget.viewModel ?? context.read<VM>();
     _state = _viewModel.state;
-    _sideEffect = _viewModel.sideEffect;
+    _event = _viewModel.event;
     _subscribe();
   }
 
   @override
-  void didUpdateWidget(ViewModelConsumer<VM, STATE, SIDE_EFFECT> oldWidget) {
+  void didUpdateWidget(ViewModelConsumer<VM, STATE, EVENT> oldWidget) {
     super.didUpdateWidget(oldWidget);
     final oldViewModel = oldWidget.viewModel ?? context.read<VM>();
     final currentViewModel = widget.viewModel ?? oldViewModel;
     if (oldViewModel != currentViewModel) {
-      if (_sideEffectSubscription != null) {
+      if (_eventSubscription != null) {
         _viewModel = currentViewModel;
         _state = _viewModel.state;
-        _sideEffect = _viewModel.sideEffect;
+        _event = _viewModel.event;
         _unsubscribe();
       }
       _subscribe();
@@ -71,10 +69,10 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, SIDE_EFFECT>, STATE,
     super.didChangeDependencies();
     final viewModel = widget.viewModel ?? context.read<VM>();
     if (_viewModel != viewModel) {
-      if (_sideEffectSubscription != null) {
+      if (_eventSubscription != null) {
         _viewModel = viewModel;
         _state = _viewModel.state;
-        _sideEffect = _viewModel.sideEffect;
+        _event = _viewModel.event;
         _unsubscribe();
       }
       _subscribe();
@@ -104,19 +102,18 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, SIDE_EFFECT>, STATE,
       _state = state;
     });
 
-    _sideEffectSubscription = _viewModel.sideEffectStream.listen((sideEffect) {
-      if (widget.reactToSideEffectWhen?.call(_sideEffect, sideEffect) ??
-          _sideEffect != sideEffect) {
-        widget.onSideEffect?.call(context, sideEffect);
+    _eventSubscription = _viewModel.eventStream.listen((event) {
+      if (widget.reactToEventWhen?.call(_event, event) ?? _event != event) {
+        widget.onEvent?.call(context, event);
       }
-      _sideEffect = _viewModel.sideEffect;
+      _event = _viewModel.event;
     });
   }
 
   void _unsubscribe() {
     _stateSubscription?.cancel();
     _stateSubscription = null;
-    _sideEffectSubscription?.cancel();
-    _sideEffectSubscription = null;
+    _eventSubscription?.cancel();
+    _eventSubscription = null;
   }
 }

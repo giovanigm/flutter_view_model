@@ -7,7 +7,7 @@ class MockViewModel<State, SideEffect> extends Mock
     implements ViewModel<State, SideEffect> {
   MockViewModel() {
     when(() => stateStream).thenAnswer((_) => Stream<State>.empty());
-    when(() => sideEffectStream).thenAnswer((_) => Stream<SideEffect>.empty());
+    when(() => eventStream).thenAnswer((_) => Stream<SideEffect>.empty());
     when(close).thenAnswer((_) => Future<void>.value());
   }
 
@@ -32,7 +32,7 @@ class MockViewModel<State, SideEffect> extends Mock
   }
 
   void setInitialSideEffect(SideEffect sideEffect) {
-    when(() => this.sideEffect).thenReturn(sideEffect);
+    when(() => event).thenReturn(sideEffect);
   }
 
   void setStateStream(Stream<State> stream) {
@@ -45,10 +45,9 @@ class MockViewModel<State, SideEffect> extends Mock
 
   void setSideEffectStream(Stream<SideEffect> stream) {
     final broadcastStream = stream.asBroadcastStream();
-    when(() => sideEffectStream)
-        .thenAnswer((_) => broadcastStream.map((sideEffect) {
-              when(() => this.sideEffect).thenReturn(sideEffect);
-              return sideEffect;
-            }));
+    when(() => eventStream).thenAnswer((_) => broadcastStream.map((sideEffect) {
+          when(() => event).thenReturn(sideEffect);
+          return sideEffect;
+        }));
   }
 }

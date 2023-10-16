@@ -4,35 +4,34 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-abstract class ViewModel<State, SideEffect> {
+abstract class ViewModel<State, Event> {
   ViewModel({
     required State initialState,
-    required SideEffect initialSideEffect,
+    required Event initialEvent,
   }) {
     _state = initialState;
-    _sideEffect = initialSideEffect;
+    _event = initialEvent;
   }
 
   late State _state;
 
-  late SideEffect _sideEffect;
+  late Event _event;
 
   bool _stateEmitted = false;
 
   late final _stateController = StreamController<State>.broadcast();
 
-  late final _sideEffectController = StreamController<SideEffect>.broadcast();
+  late final _eventController = StreamController<Event>.broadcast();
 
   State get state => _state;
 
-  SideEffect get sideEffect => _sideEffect;
+  Event get event => _event;
 
   Stream<State> get stateStream => _stateController.stream;
 
-  Stream<SideEffect> get sideEffectStream => _sideEffectController.stream;
+  Stream<Event> get eventStream => _eventController.stream;
 
-  bool get isClosed =>
-      _stateController.isClosed || _sideEffectController.isClosed;
+  bool get isClosed => _stateController.isClosed || _eventController.isClosed;
 
   void emitState(State state) {
     try {
@@ -49,14 +48,14 @@ abstract class ViewModel<State, SideEffect> {
     }
   }
 
-  void emitSideEffect(SideEffect sideEffect) {
+  void emitEvent(Event event) {
     try {
       if (isClosed) {
         debugPrint('Cannot emit new side effects after calling close');
         return;
       }
-      _sideEffect = sideEffect;
-      _sideEffectController.add(sideEffect);
+      _event = event;
+      _eventController.add(event);
     } catch (error) {
       rethrow;
     }
@@ -65,6 +64,6 @@ abstract class ViewModel<State, SideEffect> {
   @mustCallSuper
   Future<void> close() async {
     await _stateController.close();
-    await _sideEffectController.close();
+    await _eventController.close();
   }
 }
