@@ -53,6 +53,7 @@ void main() {
       expect(find.text('1'), findsOneWidget);
       expect(find.text('Odd'), findsOneWidget);
 
+      // Wait for SnackBar to dismiss
       await tester.pump(const Duration(seconds: 1));
       await tester.pump(const Duration(seconds: 1));
       await tester.pump(const Duration(seconds: 1));

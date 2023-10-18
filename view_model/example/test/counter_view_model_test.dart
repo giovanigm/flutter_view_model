@@ -1,1 +1,23 @@
-void main() {}
+import 'package:example/main.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  late CounterViewModel viewModel;
+
+  setUp(() {
+    viewModel = CounterViewModel();
+  });
+
+  tearDown(() {
+    viewModel.close();
+  });
+
+  test("", () {
+    expect(viewModel.stateStream, emitsInOrder([1, 2, 3]));
+    expect(viewModel.eventStream, emitsInOrder([false, true, false]));
+    viewModel.add();
+    viewModel.add();
+    viewModel.add();
+    viewModel.close();
+  });
+}
