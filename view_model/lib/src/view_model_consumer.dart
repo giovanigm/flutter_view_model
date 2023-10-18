@@ -24,7 +24,7 @@ class ViewModelConsumer<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
 
   final bool Function(STATE previous, STATE current)? buildWhen;
 
-  final bool Function(EVENT previous, EVENT current)? reactToEventWhen;
+  final bool Function(EVENT? previous, EVENT current)? reactToEventWhen;
 
   @override
   State<ViewModelConsumer<VM, STATE, EVENT>> createState() =>
@@ -37,14 +37,14 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
   StreamSubscription<EVENT>? _eventSubscription;
   StreamSubscription<STATE>? _stateSubscription;
   late STATE _state;
-  late EVENT _event;
+  EVENT? _event;
 
   @override
   void initState() {
     super.initState();
     _viewModel = widget.viewModel ?? context.read<VM>();
     _state = _viewModel.state;
-    _event = _viewModel.event;
+    _event = _viewModel.lastEvent;
     _subscribe();
   }
 
@@ -57,7 +57,7 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
       if (_eventSubscription != null) {
         _viewModel = currentViewModel;
         _state = _viewModel.state;
-        _event = _viewModel.event;
+        _event = _viewModel.lastEvent;
         _unsubscribe();
       }
       _subscribe();
@@ -72,7 +72,7 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
       if (_eventSubscription != null) {
         _viewModel = viewModel;
         _state = _viewModel.state;
-        _event = _viewModel.event;
+        _event = _viewModel.lastEvent;
         _unsubscribe();
       }
       _subscribe();
@@ -106,7 +106,7 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
       if (widget.reactToEventWhen?.call(_event, event) ?? _event != event) {
         widget.onEvent?.call(context, event);
       }
-      _event = _viewModel.event;
+      _event = _viewModel.lastEvent;
     });
   }
 

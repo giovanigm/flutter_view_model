@@ -35,7 +35,7 @@ class TestViewModel<State, Event> extends Mock
   State get state => _state;
 
   @override
-  Event get event => _event;
+  Event get lastEvent => _event;
 
   @override
   bool get isClosed => _stateController.isClosed || _eventController.isClosed;

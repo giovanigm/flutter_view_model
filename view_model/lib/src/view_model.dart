@@ -1,21 +1,15 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
 abstract class ViewModel<State, Event> {
-  ViewModel({
-    required State initialState,
-    required Event initialEvent,
-  }) {
+  ViewModel({required State initialState}) {
     _state = initialState;
-    _event = initialEvent;
   }
 
   late State _state;
 
-  late Event _event;
+  Event? _event;
 
   bool _stateEmitted = false;
 
@@ -25,13 +19,13 @@ abstract class ViewModel<State, Event> {
 
   State get state => _state;
 
-  Event get event => _event;
+  Event? get lastEvent => _event;
 
   Stream<State> get stateStream => _stateController.stream;
 
   Stream<Event> get eventStream => _eventController.stream;
 
-  bool get isClosed => _stateController.isClosed || _eventController.isClosed;
+  bool isClosed = false;
 
   void emitState(State state) {
     try {
@@ -51,7 +45,7 @@ abstract class ViewModel<State, Event> {
   void emitEvent(Event event) {
     try {
       if (isClosed) {
-        debugPrint('Cannot emit new side effects after calling close');
+        debugPrint('Cannot emit new events after calling close');
         return;
       }
       _event = event;
@@ -65,5 +59,6 @@ abstract class ViewModel<State, Event> {
   Future<void> close() async {
     await _stateController.close();
     await _eventController.close();
+    isClosed = true;
   }
 }

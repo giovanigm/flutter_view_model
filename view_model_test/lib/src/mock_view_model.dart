@@ -32,7 +32,7 @@ class MockViewModel<State, SideEffect> extends Mock
   }
 
   void setInitialSideEffect(SideEffect sideEffect) {
-    when(() => event).thenReturn(sideEffect);
+    when(() => lastEvent).thenReturn(sideEffect);
   }
 
   void setStateStream(Stream<State> stream) {
@@ -46,7 +46,7 @@ class MockViewModel<State, SideEffect> extends Mock
   void setSideEffectStream(Stream<SideEffect> stream) {
     final broadcastStream = stream.asBroadcastStream();
     when(() => eventStream).thenAnswer((_) => broadcastStream.map((sideEffect) {
-          when(() => event).thenReturn(sideEffect);
+          when(() => lastEvent).thenReturn(sideEffect);
           return sideEffect;
         }));
   }
