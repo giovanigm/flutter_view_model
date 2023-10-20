@@ -5,58 +5,51 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
-class ViewModelConsumer<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
+class ViewModelListener<VM extends ViewModel<dynamic, EVENT>, EVENT>
     extends StatefulWidget {
-  const ViewModelConsumer({
+  const ViewModelListener({
     Key? key,
-    required this.builder,
     this.viewModel,
-    this.onEvent,
-    this.buildWhen,
+    required this.onEvent,
     this.reactToEventWhen,
+    required this.child,
   }) : super(key: key);
 
   final VM? viewModel;
 
-  final Widget Function(BuildContext context, STATE state) builder;
-
   final void Function(BuildContext context, EVENT event)? onEvent;
-
-  final bool Function(STATE previous, STATE current)? buildWhen;
 
   final bool Function(EVENT? previous, EVENT current)? reactToEventWhen;
 
+  final Widget child;
+
   @override
-  State<ViewModelConsumer<VM, STATE, EVENT>> createState() =>
-      _ViewModelConsumerState<VM, STATE, EVENT>();
+  State<ViewModelListener<VM, EVENT>> createState() =>
+      _ViewModelListenerState<VM, EVENT>();
 }
 
-class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
-    extends State<ViewModelConsumer<VM, STATE, EVENT>> {
+class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
+    extends State<ViewModelListener<VM, EVENT>> {
   late VM _viewModel;
   StreamSubscription<EVENT>? _eventSubscription;
-  StreamSubscription<STATE>? _stateSubscription;
-  late STATE _state;
   EVENT? _event;
 
   @override
   void initState() {
     super.initState();
     _viewModel = widget.viewModel ?? context.read<VM>();
-    _state = _viewModel.state;
     _event = _viewModel.lastEvent;
     _subscribe();
   }
 
   @override
-  void didUpdateWidget(ViewModelConsumer<VM, STATE, EVENT> oldWidget) {
+  void didUpdateWidget(ViewModelListener<VM, EVENT> oldWidget) {
     super.didUpdateWidget(oldWidget);
     final oldViewModel = oldWidget.viewModel ?? context.read<VM>();
     final currentViewModel = widget.viewModel ?? oldViewModel;
     if (oldViewModel != currentViewModel) {
-      if (_stateSubscription != null && _eventSubscription != null) {
+      if (_eventSubscription != null) {
         _viewModel = currentViewModel;
-        _state = _viewModel.state;
         _event = _viewModel.lastEvent;
         _unsubscribe();
       }
@@ -69,9 +62,8 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
     super.didChangeDependencies();
     final viewModel = widget.viewModel ?? context.read<VM>();
     if (_viewModel != viewModel) {
-      if (_stateSubscription != null && _eventSubscription != null) {
+      if (_eventSubscription != null) {
         _viewModel = viewModel;
-        _state = _viewModel.state;
         _event = _viewModel.lastEvent;
         _unsubscribe();
       }
@@ -85,7 +77,7 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
       context.select<VM, bool>((viewModel) => identical(_viewModel, viewModel));
     }
 
-    return widget.builder(context, _state);
+    return widget.child;
   }
 
   @override
@@ -95,13 +87,6 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
   }
 
   void _subscribe() {
-    _stateSubscription = _viewModel.stateStream.listen((state) {
-      if (widget.buildWhen?.call(_state, state) ?? true) {
-        setState(() {});
-      }
-      _state = state;
-    });
-
     _eventSubscription = _viewModel.eventStream.listen((event) {
       if (widget.reactToEventWhen?.call(_event, event) ?? _event != event) {
         widget.onEvent?.call(context, event);
@@ -111,8 +96,6 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
   }
 
   void _unsubscribe() {
-    _stateSubscription?.cancel();
-    _stateSubscription = null;
     _eventSubscription?.cancel();
     _eventSubscription = null;
   }

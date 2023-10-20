@@ -11,8 +11,6 @@ abstract class ViewModel<State, Event> {
 
   Event? _event;
 
-  bool _stateEmitted = false;
-
   late final _stateController = StreamController<State>.broadcast();
 
   late final _eventController = StreamController<Event>.broadcast();
@@ -33,10 +31,8 @@ abstract class ViewModel<State, Event> {
         debugPrint('Cannot emit new states after calling close');
         return;
       }
-      if (state == _state && _stateEmitted) return;
       _state = state;
       _stateController.add(_state);
-      _stateEmitted = true;
     } catch (error) {
       rethrow;
     }
