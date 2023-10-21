@@ -31,6 +31,7 @@ abstract class ViewModel<State, Event> {
         debugPrint('Cannot emit new states after calling close');
         return;
       }
+      if (state == _state) return;
       _state = state;
       _stateController.add(_state);
     } catch (error) {
@@ -52,9 +53,9 @@ abstract class ViewModel<State, Event> {
   }
 
   @mustCallSuper
-  Future<void> close() async {
-    await _stateController.close();
-    await _eventController.close();
+  void close() {
+    _stateController.close();
+    _eventController.close();
     isClosed = true;
   }
 }
