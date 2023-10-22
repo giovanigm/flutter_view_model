@@ -12,12 +12,12 @@ void main() {
     viewModel.close();
   });
 
-  test("", () {
+  test("", () async {
     expect(viewModel.stateStream, emitsInOrder([1, 2, 3]));
     expect(viewModel.eventStream, emitsInOrder([false, true, false]));
     viewModel.add();
     viewModel.add();
     viewModel.add();
-    viewModel.close();
+    await viewModel.close();
   });
 }

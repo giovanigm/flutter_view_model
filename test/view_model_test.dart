@@ -12,8 +12,8 @@ void main() {
     viewModel = TestViewModel();
   });
 
-  tearDown(() {
-    viewModel.close();
+  tearDown(() async {
+    await viewModel.close();
   });
 
   group("state", () {
@@ -39,67 +39,67 @@ void main() {
   });
 
   group("emitState", () {
-    test("should emit states in correct order", () {
+    test("should emit states in correct order", () async {
       expect(viewModel.stateStream, emitsInOrder([1, 2, 3, emitsDone]));
       viewModel.emitState(1);
       viewModel.emitState(2);
       viewModel.emitState(3);
-      viewModel.close();
+      await viewModel.close();
     });
 
-    test("should not emit new states after close", () {
+    test("should not emit new states after close", () async {
       expect(viewModel.stateStream, emitsInOrder([1, 2, emitsDone]));
       viewModel.emitState(1);
       viewModel.emitState(2);
-      viewModel.close();
+      await viewModel.close();
       viewModel.emitState(3);
     });
 
-    test("should not emit the same state", () {
+    test("should not emit the same state", () async {
       expect(viewModel.stateStream, emitsInOrder([1, 2, emitsDone]));
       viewModel.emitState(1);
       viewModel.emitState(1);
       viewModel.emitState(2);
       viewModel.emitState(2);
-      viewModel.close();
+      await viewModel.close();
     });
   });
 
   group("emitEvent", () {
-    test("should emit events in correct order", () {
+    test("should emit events in correct order", () async {
       expect(viewModel.eventStream, emitsInOrder([1, 2, 3, emitsDone]));
       viewModel.emitEvent(1);
       viewModel.emitEvent(2);
       viewModel.emitEvent(3);
-      viewModel.close();
+      await viewModel.close();
     });
 
-    test("should not emit new events after close", () {
+    test("should not emit new events after close", () async {
       expect(viewModel.eventStream, emitsInOrder([1, 2, emitsDone]));
       viewModel.emitEvent(1);
       viewModel.emitEvent(2);
-      viewModel.close();
+      await viewModel.close();
       viewModel.emitEvent(3);
     });
 
-    test("should allow emit the same event", () {
+    test("should allow emit the same event", () async {
       expect(viewModel.eventStream, emitsInOrder([1, 1, 2, 2, emitsDone]));
       viewModel.emitEvent(1);
       viewModel.emitEvent(1);
       viewModel.emitEvent(2);
       viewModel.emitEvent(2);
-      viewModel.close();
+      await viewModel.close();
     });
   });
 
   group("close", () {
-    test("should close stateStream", () {
-      viewModel.close();
+    test("should close stateStream", () async {
+      await viewModel.close();
       expect(viewModel.eventStream, emitsDone);
     });
 
-    test("should close eventStream", () {
-      viewModel.close();
+    test("should close eventStream", () async {
+      await viewModel.close();
       expect(viewModel.eventStream, emitsDone);
     });
   });

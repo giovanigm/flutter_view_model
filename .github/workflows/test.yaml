@@ -5,6 +5,8 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  pull_request:
+    types: [opened, reopened]
   push:
     branches: [main]
     paths-ignore:
@@ -29,5 +31,7 @@ jobs:
           cache: true
       - name: Install dependencies
         run: flutter clean && flutter pub get
+      - name: Analyze
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
       - name: Run unit tests
         run: flutter test

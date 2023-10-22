@@ -53,9 +53,9 @@ abstract class ViewModel<State, Event> {
   }
 
   @mustCallSuper
-  void close() {
-    _stateController.close();
-    _eventController.close();
+  Future<void> close() async {
+    await _stateController.close();
+    await _eventController.close();
     isClosed = true;
   }
 }
