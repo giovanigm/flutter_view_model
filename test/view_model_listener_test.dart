@@ -10,9 +10,9 @@ class _TestViewModel extends ViewModel<void, int> {
   }
 }
 
-const _newViewModelKey = "new_view_model";
-const _sameViewModelKey = "same_view_model";
-const _incrementKey = "increment";
+const _newViewModelKey = Key("new_view_model");
+const _sameViewModelKey = Key("same_view_model");
+const _incrementKey = Key("increment");
 
 class _TestWidget extends StatefulWidget {
   final VoidCallback? onBuild;
@@ -54,7 +54,7 @@ class _TestWidgetState extends State<_TestWidget> {
           child: Column(
             children: [
               ElevatedButton(
-                key: const Key(_newViewModelKey),
+                key: _newViewModelKey,
                 onPressed: () {
                   setState(() {
                     viewModel = _TestViewModel();
@@ -63,14 +63,14 @@ class _TestWidgetState extends State<_TestWidget> {
                 child: const SizedBox(),
               ),
               ElevatedButton(
-                key: const Key(_sameViewModelKey),
+                key: _sameViewModelKey,
                 onPressed: () {
                   setState(() => viewModel = viewModel);
                 },
                 child: const SizedBox(),
               ),
               ElevatedButton(
-                key: const Key(_incrementKey),
+                key: _incrementKey,
                 onPressed: () {
                   viewModel.increment();
                 },
@@ -266,15 +266,15 @@ void main() {
         },
       ));
 
-      await tester.tap(find.byKey(const Key(_incrementKey)));
+      await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
       expect(lastEvent, null);
       expect(currentEvent, 1);
 
-      await tester.tap(find.byKey(const Key(_sameViewModelKey)));
+      await tester.tap(find.byKey(_sameViewModelKey));
 
-      await tester.tap(find.byKey(const Key(_incrementKey)));
+      await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
       expect(lastEvent, 1);
@@ -293,15 +293,15 @@ void main() {
         },
       ));
 
-      await tester.tap(find.byKey(const Key(_incrementKey)));
+      await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
       expect(lastEvent, null);
       expect(currentEvent, 1);
 
-      await tester.tap(find.byKey(const Key(_newViewModelKey)));
+      await tester.tap(find.byKey(_newViewModelKey));
 
-      await tester.tap(find.byKey(const Key(_incrementKey)));
+      await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
       expect(lastEvent, null);
