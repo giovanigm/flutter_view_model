@@ -229,6 +229,32 @@ void main() {
     });
 
     testWidgets(
+        "should retrieve the ViewModel from the context if it is not provided",
+        (tester) async {
+      final List<int> events = [];
+
+      await tester.pumpWidget(
+        ViewModelProvider(
+          create: (context) => viewModel,
+          child: ViewModelListener<_TestViewModel, int>(
+            onEvent: (context, event) => events.add(event),
+            child: const SizedBox(),
+          ),
+        ),
+      );
+
+      viewModel.increment();
+      await tester.pump();
+
+      expect(events, [1]);
+
+      viewModel.increment();
+      await tester.pump();
+
+      expect(events, [1, 2]);
+    });
+
+    testWidgets(
         "should keep subscription if ViewModel is changed at runtime to the same ViewModel",
         (tester) async {
       int? lastEvent;
