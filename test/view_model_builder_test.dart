@@ -96,6 +96,131 @@ void main() {
     viewModel.close();
   });
 
+  testWidgets("should build widget returned from builder", (tester) async {
+    const targetKey = Key('key');
+    await tester.pumpWidget(
+      ViewModelBuilder<_TestViewModel, int>(
+        viewModel: viewModel,
+        builder: (context, state) => const SizedBox(key: targetKey),
+      ),
+    );
+    expect(find.byKey(targetKey), findsOneWidget);
+  });
+
+  testWidgets("should call builder for every state", (tester) async {
+    final List<int> states = [];
+
+    await tester.pumpWidget(ViewModelBuilder<_TestViewModel, int>(
+      viewModel: viewModel,
+      builder: (context, state) {
+        states.add(state);
+        return const Placeholder();
+      },
+    ));
+
+    expect(states, [0]);
+
+    viewModel.emitState(1);
+    await tester.pump();
+    await tester.pump();
+
+    expect(states, [0, 1]);
+
+    viewModel.emitState(2);
+    await tester.pump();
+    await tester.pump();
+
+    expect(states, [0, 1, 2]);
+  });
+
+  testWidgets(
+      "should call buildWhen with correct previous event and correct current event",
+      (tester) async {
+    int? previousEvent;
+    late int currentEvent;
+
+    await tester.pumpWidget(ViewModelBuilder<_TestViewModel, int>(
+      viewModel: viewModel,
+      buildWhen: (previous, current) {
+        previousEvent = previous;
+        currentEvent = current;
+        return true;
+      },
+      builder: (context, state) {
+        return const Placeholder();
+      },
+    ));
+
+    viewModel.emitState(1);
+    await tester.pump();
+    await tester.pump();
+
+    expect(previousEvent, 0);
+    expect(currentEvent, 1);
+
+    viewModel.emitState(2);
+    await tester.pump();
+    await tester.pump();
+
+    expect(previousEvent, 1);
+    expect(currentEvent, 2);
+  });
+
+  testWidgets("should call builder if buildWhen returns true", (tester) async {
+    final List<int> states = [];
+
+    await tester.pumpWidget(ViewModelBuilder<_TestViewModel, int>(
+      viewModel: viewModel,
+      buildWhen: (previous, current) => true,
+      builder: (context, state) {
+        states.add(state);
+        return const Placeholder();
+      },
+    ));
+
+    expect(states, [0]);
+
+    viewModel.emitState(1);
+    await tester.pump();
+    await tester.pump();
+
+    expect(states, [0, 1]);
+
+    viewModel.emitState(2);
+    await tester.pump();
+    await tester.pump();
+
+    expect(states, [0, 1, 2]);
+  });
+
+  testWidgets("should not call builder if buildWhen returns false",
+      (tester) async {
+    final List<int> states = [];
+
+    await tester.pumpWidget(ViewModelBuilder<_TestViewModel, int>(
+      viewModel: viewModel,
+      buildWhen: (previous, current) => false,
+      builder: (context, state) {
+        states.add(state);
+        return const Placeholder();
+      },
+    ));
+
+    expect(states, [0]);
+
+    viewModel.emitState(1);
+    await tester.pump();
+    await tester.pump();
+
+    expect(states, [0]);
+
+    viewModel.emitState(2);
+    await tester.pump();
+    await tester.pump();
+
+    expect(states, [0]);
+  });
+
   testWidgets(
       "should retrieve the ViewModel from the context if it is not provided",
       (tester) async {

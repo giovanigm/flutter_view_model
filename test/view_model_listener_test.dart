@@ -97,7 +97,7 @@ void main() {
 
   group("ViewModelListener", () {
     testWidgets("should render child", (tester) async {
-      const targetKey = Key('cubit_listener_container');
+      const targetKey = Key('key');
       await tester.pumpWidget(
         ViewModelListener<_TestViewModel, int>(
           viewModel: viewModel,
@@ -160,7 +160,7 @@ void main() {
       expect(currentEvent, 2);
     });
 
-    testWidgets("should not call onEvent if reactToEventWhen returns true",
+    testWidgets("should call onEvent if reactToEventWhen returns true",
         (tester) async {
       final List<int> events = [];
 
