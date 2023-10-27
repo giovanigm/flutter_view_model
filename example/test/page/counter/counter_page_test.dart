@@ -10,11 +10,11 @@ import 'counter_page_test.mocks.dart';
 
 @GenerateNiceMocks([MockSpec<CounterViewModel>()])
 void main() {
-  group("Mock ViewModel", () {
+  group("Counter Page", () {
     setUp(() {});
 
-    testWidgets("", (widgetTester) async {
-      final CounterViewModel viewModel = MockCounterViewModel();
+    testWidgets("Mock ViewModel", (widgetTester) async {
+      final viewModel = MockCounterViewModel();
 
       when(viewModel.state).thenReturn(2);
 
@@ -28,7 +28,7 @@ void main() {
     });
   });
 
-  group("Real ViewModel", () {
+  group("Counter Page", () {
     late CounterViewModel viewModel;
 
     setUp(() {
@@ -39,7 +39,7 @@ void main() {
       viewModel.close();
     });
 
-    testWidgets("", (tester) async {
+    testWidgets("Real ViewModel", (tester) async {
       await tester.pumpWidget(MaterialApp(
           home: ViewModelProvider(
         create: (context) => viewModel,

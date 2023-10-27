@@ -53,7 +53,7 @@ class LoginPage extends StatelessWidget {
                   height: 24,
                 ),
                 FilledButton(
-                  onPressed: state.isValidPassword && state.isValidPassword
+                  onPressed: state.isValidPassword && state.isValidEmail
                       ? () async => await context.read<LoginViewModel>().login()
                       : null,
                   style: FilledButton.styleFrom(

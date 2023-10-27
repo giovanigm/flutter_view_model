@@ -44,7 +44,7 @@ class LoginState {
 
   LoginState validPassword() => LoginState._(
         isValidEmail: isValidEmail,
-        emailTextError: null,
+        emailTextError: emailTextError,
         isValidPassword: true,
         passwordTextError: null,
       );
