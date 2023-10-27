@@ -17,7 +17,5 @@ class EvenCounterEvent extends CounterEvent {}
 class OddCounterEvent extends CounterEvent {}
 
 class LoggoutCounterEvent extends CounterEvent {
-  final String route;
-
-  LoggoutCounterEvent({required this.route});
+  final String route = '/login';
 }

@@ -5,8 +5,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:example/view_model/counter_view_model.dart' as _i2;
-import 'package:example/view_model/event/counter_event.dart' as _i4;
+import 'package:example/view_model/counter/counter_event.dart' as _i4;
+import 'package:example/view_model/counter/counter_view_model.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint

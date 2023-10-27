@@ -1,4 +1,4 @@
-import 'package:example/view_model/event/counter_event.dart';
+import 'package:example/view_model/counter/counter_event.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:view_model/view_model.dart';
 
@@ -14,6 +14,6 @@ class CounterViewModel extends ViewModel<int, CounterEvent> {
   Future<void> logout() async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.clear();
-    emitEvent(LoggoutCounterEvent(route: '/login'));
+    emitEvent(LoggoutCounterEvent());
   }
 }

@@ -1,4 +1,4 @@
-import 'package:example/view_model/counter_view_model.dart';
+import 'package:example/view_model/counter/counter_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

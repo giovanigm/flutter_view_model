@@ -1,5 +1,5 @@
-import 'package:example/page/counter_page.dart';
-import 'package:example/view_model/counter_view_model.dart';
+import 'package:example/page/counter/counter_page.dart';
+import 'package:example/view_model/counter/counter_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -19,7 +19,7 @@ void main() {
       when(viewModel.state).thenReturn(2);
 
       await widgetTester.pumpWidget(MaterialApp(
-          home: ViewModelProvider(
+          home: ViewModelProvider<CounterViewModel>(
         create: (context) => viewModel,
         child: const CounterPage(),
       )));

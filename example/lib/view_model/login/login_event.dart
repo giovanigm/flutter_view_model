@@ -1,22 +1,14 @@
 sealed class LoginEvent {
   T when<T>({
-    required T Function(ErrorLoginEvent) error,
     required T Function() startLoading,
     required T Function() stopLoading,
     required T Function(NavigateLoginEvent) navigate,
   }) {
     return switch (this) {
-      ErrorLoginEvent value => error(value),
       LoadingLoginEvent value => value.open ? startLoading() : stopLoading(),
       NavigateLoginEvent value => navigate(value),
     };
   }
-}
-
-class ErrorLoginEvent extends LoginEvent {
-  final String message;
-
-  ErrorLoginEvent({required this.message}) : super();
 }
 
 class LoadingLoginEvent extends LoginEvent {
@@ -29,7 +21,5 @@ class LoadingLoginEvent extends LoginEvent {
 }
 
 class NavigateLoginEvent extends LoginEvent {
-  final String route;
-
-  NavigateLoginEvent({required this.route});
+  final String route = '/counter';
 }
