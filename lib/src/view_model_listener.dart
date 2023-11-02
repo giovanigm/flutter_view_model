@@ -91,7 +91,7 @@ class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
       if (widget.reactToEventWhen?.call(_event, event) ?? _event != event) {
         widget.onEvent?.call(context, event);
       }
-      _event = _viewModel.lastEvent;
+      _event = event;
     });
   }
 

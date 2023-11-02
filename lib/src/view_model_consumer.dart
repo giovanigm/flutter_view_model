@@ -106,7 +106,7 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
       if (widget.reactToEventWhen?.call(_event, event) ?? _event != event) {
         widget.onEvent?.call(context, event);
       }
-      _event = _viewModel.lastEvent;
+      _event = event;
     });
   }
 

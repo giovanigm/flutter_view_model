@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:view_model/view_model.dart';
 
+import 'pages/counter/counter_page.dart';
+import 'pages/counter/counter_page_view_model.dart';
+import 'pages/login/login_page.dart';
+import 'pages/login/login_page_view_model.dart';
+import 'pages/splash/splash_page.dart';
+import 'pages/splash/splash_page_view_model.dart';
+import 'pages/widgets/loading_overlay.dart';
+
 void main() {
   runApp(const MainApp());
 }
+
+final routes = {
+  '/counter': (context) => ViewModelProvider<CounterPageViewModel>(
+        create: (_) => CounterPageViewModel(),
+        child: const CounterPage(),
+      ),
+  '/login': (context) => ViewModelProvider<LoginPageViewModel>(
+        create: (_) => LoginPageViewModel(),
+        child: const LoginPage(),
+      ),
+  '/': (context) => ViewModelProvider<SplashPageViewModel>(
+        create: (_) => SplashPageViewModel()..load(),
+        child: const SplashPage(),
+      ),
+};
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -11,59 +34,14 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ViewModelProvider(
-        create: (context) => CounterViewModel(),
-        child: const CounterPage(),
+      theme: ThemeData.dark(useMaterial3: true).copyWith(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.cyan),
       ),
+      builder: (context, child) =>
+          LoadingOverlay(child: child ?? const Placeholder()),
+      routes: routes,
+      initialRoute: '/',
     );
-  }
-}
-
-class CounterPage extends StatelessWidget {
-  const CounterPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Counter')),
-      body: ViewModelConsumer<CounterViewModel, int, bool>(
-        onEvent: (context, event) {
-          final isEven = event;
-          final message = isEven ? 'Even' : 'Odd';
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(message),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        },
-        builder: (context, state) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('You have pushed the button this many times:'),
-              Text(
-                '$state',
-                style: Theme.of(context).textTheme.displayLarge,
-              )
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<CounterViewModel>().add(),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class CounterViewModel extends ViewModel<int, bool> {
-  CounterViewModel() : super(initialState: 0);
-
-  void add() {
-    final newState = state + 1;
-    emitState(newState);
-    emitEvent(newState % 2 == 0);
   }
 }

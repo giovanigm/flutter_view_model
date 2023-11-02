@@ -1,4 +1,5 @@
-import 'package:example/main.dart';
+import 'package:example/pages/counter/counter_page.dart';
+import 'package:example/pages/counter/counter_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -7,18 +8,18 @@ import 'package:view_model/view_model.dart';
 
 import 'counter_page_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<CounterViewModel>()])
+@GenerateNiceMocks([MockSpec<CounterPageViewModel>()])
 void main() {
-  group("Mock ViewModel", () {
+  group("Counter Page", () {
     setUp(() {});
 
-    testWidgets("", (widgetTester) async {
-      final CounterViewModel viewModel = MockCounterViewModel();
+    testWidgets("Mock ViewModel", (widgetTester) async {
+      final viewModel = MockCounterViewModel();
 
       when(viewModel.state).thenReturn(2);
 
       await widgetTester.pumpWidget(MaterialApp(
-          home: ViewModelProvider(
+          home: ViewModelProvider<CounterPageViewModel>(
         create: (context) => viewModel,
         child: const CounterPage(),
       )));
@@ -27,18 +28,18 @@ void main() {
     });
   });
 
-  group("Real ViewModel", () {
-    late CounterViewModel viewModel;
+  group("Counter Page", () {
+    late CounterPageViewModel viewModel;
 
     setUp(() {
-      viewModel = CounterViewModel();
+      viewModel = CounterPageViewModel();
     });
 
     tearDown(() {
       viewModel.close();
     });
 
-    testWidgets("", (tester) async {
+    testWidgets("Real ViewModel", (tester) async {
       await tester.pumpWidget(MaterialApp(
           home: ViewModelProvider(
         create: (context) => viewModel,
@@ -51,18 +52,11 @@ void main() {
       await tester.pump();
 
       expect(find.text('1'), findsOneWidget);
-      expect(find.text('Odd'), findsOneWidget);
-
-      // Wait for SnackBar to dismiss
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pump();
 
       expect(find.text('2'), findsOneWidget);
-      expect(find.text('Even'), findsOneWidget);
     });
   });
 }
