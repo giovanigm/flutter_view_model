@@ -14,7 +14,7 @@ void main() {
     setUp(() {});
 
     testWidgets("Mock ViewModel", (widgetTester) async {
-      final viewModel = MockCounterViewModel();
+      final viewModel = MockCounterPageViewModel();
 
       when(viewModel.state).thenReturn(2);
 

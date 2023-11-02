@@ -24,7 +24,7 @@ class SplashPage extends StatelessWidget {
               SizedBox(height: 80, width: 80, child: FlutterLogo()),
               SizedBox(height: 24),
               Text(
-                'Flutter View Model',
+                'flutter_view_model',
                 style: TextStyle(fontSize: 18),
               )
             ],

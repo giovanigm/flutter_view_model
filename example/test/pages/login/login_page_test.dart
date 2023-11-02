@@ -19,7 +19,7 @@ void main() {
       late LoginPageViewModel viewModel;
 
       setUp(() {
-        viewModel = MockLoginViewModel();
+        viewModel = MockLoginPageViewModel();
       });
 
       testWidgets("Should render initial state correctly",
