@@ -1,29 +1,17 @@
-import 'package:example/view_model/counter/counter_event.dart';
 import 'package:flutter/material.dart';
 import 'package:view_model/view_model.dart';
 
-import '../../view_model/counter/counter_view_model.dart';
+import 'counter_page_event.dart';
+import 'counter_page_view_model.dart';
 
 class CounterPage extends StatelessWidget {
   const CounterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelConsumer<CounterViewModel, int, CounterEvent>(
+    return ViewModelConsumer<CounterPageViewModel, int, CounterPageEvent>(
       onEvent: (context, event) {
         event.when(
-          evenNumber: () => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Even'),
-              duration: Duration(seconds: 1),
-            ),
-          ),
-          oddNumber: () => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Odd'),
-              duration: Duration(seconds: 1),
-            ),
-          ),
           logout: (event) =>
               Navigator.of(context).pushReplacementNamed(event.route),
         );
@@ -32,7 +20,7 @@ class CounterPage extends StatelessWidget {
         appBar: AppBar(title: const Text('Counter'), actions: [
           TextButton.icon(
             onPressed: () async =>
-                await context.read<CounterViewModel>().logout(),
+                await context.read<CounterPageViewModel>().logout(),
             icon: Icon(
               Icons.logout,
               color: Theme.of(context).primaryColorDark,
@@ -56,7 +44,7 @@ class CounterPage extends StatelessWidget {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => context.read<CounterViewModel>().add(),
+          onPressed: () => context.read<CounterPageViewModel>().add(),
           child: const Icon(Icons.add),
         ),
       ),

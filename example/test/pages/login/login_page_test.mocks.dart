@@ -5,9 +5,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:example/view_model/login/login_event.dart' as _i5;
-import 'package:example/view_model/login/login_state.dart' as _i2;
-import 'package:example/view_model/login/login_view_model.dart' as _i3;
+import 'package:example/pages/login/login_page_event.dart' as _i5;
+import 'package:example/pages/login/login_page_state.dart' as _i2;
+import 'package:example/pages/login/login_page_view_model.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -21,7 +21,7 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeLoginState_0 extends _i1.SmartFake implements _i2.LoginState {
+class _FakeLoginState_0 extends _i1.SmartFake implements _i2.LoginPageState {
   _FakeLoginState_0(
     Object parent,
     Invocation parentInvocation,
@@ -34,7 +34,7 @@ class _FakeLoginState_0 extends _i1.SmartFake implements _i2.LoginState {
 /// A class which mocks [LoginViewModel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLoginViewModel extends _i1.Mock implements _i3.LoginViewModel {
+class MockLoginViewModel extends _i1.Mock implements _i3.LoginPageViewModel {
   @override
   bool get isClosed => (super.noSuchMethod(
         Invocation.getter(#isClosed),
@@ -52,7 +52,7 @@ class MockLoginViewModel extends _i1.Mock implements _i3.LoginViewModel {
       );
 
   @override
-  _i2.LoginState get state => (super.noSuchMethod(
+  _i2.LoginPageState get state => (super.noSuchMethod(
         Invocation.getter(#state),
         returnValue: _FakeLoginState_0(
           this,
@@ -62,21 +62,21 @@ class MockLoginViewModel extends _i1.Mock implements _i3.LoginViewModel {
           this,
           Invocation.getter(#state),
         ),
-      ) as _i2.LoginState);
+      ) as _i2.LoginPageState);
 
   @override
-  _i4.Stream<_i2.LoginState> get stateStream => (super.noSuchMethod(
+  _i4.Stream<_i2.LoginPageState> get stateStream => (super.noSuchMethod(
         Invocation.getter(#stateStream),
-        returnValue: _i4.Stream<_i2.LoginState>.empty(),
-        returnValueForMissingStub: _i4.Stream<_i2.LoginState>.empty(),
-      ) as _i4.Stream<_i2.LoginState>);
+        returnValue: _i4.Stream<_i2.LoginPageState>.empty(),
+        returnValueForMissingStub: _i4.Stream<_i2.LoginPageState>.empty(),
+      ) as _i4.Stream<_i2.LoginPageState>);
 
   @override
-  _i4.Stream<_i5.LoginEvent> get eventStream => (super.noSuchMethod(
+  _i4.Stream<_i5.LoginPageEvent> get eventStream => (super.noSuchMethod(
         Invocation.getter(#eventStream),
-        returnValue: _i4.Stream<_i5.LoginEvent>.empty(),
-        returnValueForMissingStub: _i4.Stream<_i5.LoginEvent>.empty(),
-      ) as _i4.Stream<_i5.LoginEvent>);
+        returnValue: _i4.Stream<_i5.LoginPageEvent>.empty(),
+        returnValueForMissingStub: _i4.Stream<_i5.LoginPageEvent>.empty(),
+      ) as _i4.Stream<_i5.LoginPageEvent>);
 
   @override
   void setEmail(String? value) => super.noSuchMethod(
@@ -97,16 +97,6 @@ class MockLoginViewModel extends _i1.Mock implements _i3.LoginViewModel {
       );
 
   @override
-  _i4.Future<void> init() => (super.noSuchMethod(
-        Invocation.method(
-          #init,
-          [],
-        ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
-
-  @override
   _i4.Future<void> login() => (super.noSuchMethod(
         Invocation.method(
           #login,
@@ -117,7 +107,7 @@ class MockLoginViewModel extends _i1.Mock implements _i3.LoginViewModel {
       ) as _i4.Future<void>);
 
   @override
-  void emitState(_i2.LoginState? state) => super.noSuchMethod(
+  void emitState(_i2.LoginPageState? state) => super.noSuchMethod(
         Invocation.method(
           #emitState,
           [state],
@@ -126,7 +116,7 @@ class MockLoginViewModel extends _i1.Mock implements _i3.LoginViewModel {
       );
 
   @override
-  void emitEvent(_i5.LoginEvent? event) => super.noSuchMethod(
+  void emitEvent(_i5.LoginPageEvent? event) => super.noSuchMethod(
         Invocation.method(
           #emitEvent,
           [event],

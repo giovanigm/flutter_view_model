@@ -1,9 +1,9 @@
-import 'package:example/page/login/login_page.dart';
-import 'package:example/page/widgets/example_text_field.dart';
-import 'package:example/page/widgets/loading_overlay.dart';
-import 'package:example/view_model/login/login_event.dart';
-import 'package:example/view_model/login/login_state.dart';
-import 'package:example/view_model/login/login_view_model.dart';
+import 'package:example/pages/login/login_page.dart';
+import 'package:example/pages/login/login_page_event.dart';
+import 'package:example/pages/login/login_page_state.dart';
+import 'package:example/pages/login/login_page_view_model.dart';
+import 'package:example/pages/widgets/example_text_field.dart';
+import 'package:example/pages/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -12,11 +12,11 @@ import 'package:view_model/view_model.dart';
 
 import 'login_page_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<LoginViewModel>()])
+@GenerateNiceMocks([MockSpec<LoginPageViewModel>()])
 void main() {
   group("Login Page", () {
     group('Mock ViewModel', () {
-      late LoginViewModel viewModel;
+      late LoginPageViewModel viewModel;
 
       setUp(() {
         viewModel = MockLoginViewModel();
@@ -24,10 +24,10 @@ void main() {
 
       testWidgets("Should render initial state correctly",
           (widgetTester) async {
-        when(viewModel.state).thenReturn(LoginState.initialState());
+        when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -55,10 +55,10 @@ void main() {
       testWidgets("Should render invalid email state correctly",
           (widgetTester) async {
         when(viewModel.state)
-            .thenReturn(LoginState.initialState().invalidEmail());
+            .thenReturn(LoginPageState.initialState().invalidEmail());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -86,10 +86,10 @@ void main() {
       testWidgets("Should render email not found state correctly",
           (widgetTester) async {
         when(viewModel.state)
-            .thenReturn(LoginState.initialState().emailNotFound());
+            .thenReturn(LoginPageState.initialState().emailNotFound());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -117,10 +117,10 @@ void main() {
       testWidgets("Should render invalid password state correctly",
           (widgetTester) async {
         when(viewModel.state)
-            .thenReturn(LoginState.initialState().invalidPassword());
+            .thenReturn(LoginPageState.initialState().invalidPassword());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -149,10 +149,10 @@ void main() {
       testWidgets("Should render incorrect password state correctly",
           (widgetTester) async {
         when(viewModel.state)
-            .thenReturn(LoginState.initialState().incorrectPassword());
+            .thenReturn(LoginPageState.initialState().incorrectPassword());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -181,10 +181,10 @@ void main() {
           "Should disable button if email is valid and password is invalid",
           (widgetTester) async {
         when(viewModel.state)
-            .thenReturn(LoginState.initialState().validEmail());
+            .thenReturn(LoginPageState.initialState().validEmail());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -213,10 +213,10 @@ void main() {
           "Should disable button if email is invalid and password is valid",
           (widgetTester) async {
         when(viewModel.state)
-            .thenReturn(LoginState.initialState().validPassword());
+            .thenReturn(LoginPageState.initialState().validPassword());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -243,11 +243,11 @@ void main() {
 
       testWidgets("Should enable button on success state",
           (widgetTester) async {
-        when(viewModel.state)
-            .thenReturn(LoginState.initialState().validPassword().validEmail());
+        when(viewModel.state).thenReturn(
+            LoginPageState.initialState().validPassword().validEmail());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -273,11 +273,11 @@ void main() {
       });
 
       testWidgets("Should call login on button tap", (widgetTester) async {
-        when(viewModel.state)
-            .thenReturn(LoginState.initialState().validPassword().validEmail());
+        when(viewModel.state).thenReturn(
+            LoginPageState.initialState().validPassword().validEmail());
 
         await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
           create: (context) => viewModel,
           child: const LoginPage(),
         )));
@@ -289,10 +289,10 @@ void main() {
 
       testWidgets("Should show loading on startLoadingEvent",
           (widgetTester) async {
-        when(viewModel.state).thenReturn(LoginState.initialState());
+        when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         final broadcastStream =
-            Stream.value(LoadingLoginEvent.open()).asBroadcastStream();
+            Stream.value(LoadingLoginEvent.start()).asBroadcastStream();
         when(viewModel.eventStream).thenAnswer(
           (_) => broadcastStream.map((event) {
             when(viewModel.lastEvent).thenReturn(event);
@@ -302,7 +302,7 @@ void main() {
 
         await widgetTester.pumpWidget(MaterialApp(
             builder: (context, child) => LoadingOverlay(child: child!),
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
               create: (context) => viewModel,
               child: const LoginPage(),
             )));
@@ -316,12 +316,12 @@ void main() {
 
       testWidgets("Should close loading on stopLoadingEvent",
           (widgetTester) async {
-        when(viewModel.state).thenReturn(LoginState.initialState());
+        when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         final broadcastStream =
-            Stream.value(LoadingLoginEvent.close()).asBroadcastStream();
+            Stream.value(LoadingLoginEvent.stop()).asBroadcastStream();
 
-        when(viewModel.lastEvent).thenReturn(LoadingLoginEvent.open());
+        when(viewModel.lastEvent).thenReturn(LoadingLoginEvent.start());
         when(viewModel.eventStream).thenAnswer(
           (_) => broadcastStream.map((event) {
             when(viewModel.lastEvent).thenReturn(event);
@@ -331,7 +331,7 @@ void main() {
 
         await widgetTester.pumpWidget(MaterialApp(
             builder: (context, child) => LoadingOverlay(child: child!),
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
               create: (context) => viewModel,
               child: const LoginPage(),
             )));
@@ -345,7 +345,7 @@ void main() {
 
       testWidgets("Should change page correctly on navigate event",
           (widgetTester) async {
-        when(viewModel.state).thenReturn(LoginState.initialState());
+        when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         final broadcastStream =
             Stream.value(NavigateLoginEvent()).asBroadcastStream();
@@ -363,7 +363,7 @@ void main() {
 
         await widgetTester.pumpWidget(MaterialApp(
             routes: routes,
-            home: ViewModelProvider<LoginViewModel>(
+            home: ViewModelProvider<LoginPageViewModel>(
               create: (context) => viewModel,
               child: const LoginPage(),
             )));

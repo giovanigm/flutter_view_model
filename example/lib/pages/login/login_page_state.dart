@@ -1,55 +1,56 @@
-class LoginState {
-  const LoginState._(
-      {this.emailTextError,
-      this.passwordTextError,
-      this.isValidEmail = false,
-      this.isValidPassword = false});
+class LoginPageState {
+  const LoginPageState._({
+    this.emailTextError,
+    this.passwordTextError,
+    this.isValidEmail = false,
+    this.isValidPassword = false,
+  });
 
   final String? emailTextError;
   final String? passwordTextError;
   final bool isValidEmail;
   final bool isValidPassword;
 
-  factory LoginState.initialState() {
-    return const LoginState._();
+  factory LoginPageState.initialState() {
+    return const LoginPageState._();
   }
 
-  LoginState invalidEmail() => LoginState._(
+  LoginPageState invalidEmail() => LoginPageState._(
         emailTextError: 'Invalid email',
         passwordTextError: passwordTextError,
         isValidEmail: false,
         isValidPassword: isValidPassword,
       );
 
-  LoginState emailNotFound() => LoginState._(
+  LoginPageState emailNotFound() => LoginPageState._(
         emailTextError: 'Email not found',
         passwordTextError: passwordTextError,
         isValidEmail: false,
         isValidPassword: isValidPassword,
       );
 
-  LoginState invalidPassword() => LoginState._(
+  LoginPageState invalidPassword() => LoginPageState._(
         emailTextError: emailTextError,
         passwordTextError: 'Password must have at least 6 characters',
         isValidEmail: isValidEmail,
         isValidPassword: false,
       );
 
-  LoginState incorrectPassword() => LoginState._(
+  LoginPageState incorrectPassword() => LoginPageState._(
         emailTextError: emailTextError,
         passwordTextError: 'Incorrect password',
         isValidEmail: isValidEmail,
         isValidPassword: false,
       );
 
-  LoginState validPassword() => LoginState._(
+  LoginPageState validPassword() => LoginPageState._(
         isValidEmail: isValidEmail,
         emailTextError: emailTextError,
         isValidPassword: true,
         passwordTextError: null,
       );
 
-  LoginState validEmail() => LoginState._(
+  LoginPageState validEmail() => LoginPageState._(
         isValidEmail: true,
         emailTextError: null,
         isValidPassword: isValidPassword,

@@ -5,8 +5,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:example/view_model/counter/counter_event.dart' as _i4;
-import 'package:example/view_model/counter/counter_view_model.dart' as _i2;
+import 'package:example/pages/counter/counter_page_event.dart' as _i4;
+import 'package:example/pages/counter/counter_page_view_model.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -23,7 +23,8 @@ import 'package:mockito/mockito.dart' as _i1;
 /// A class which mocks [CounterViewModel].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCounterViewModel extends _i1.Mock implements _i2.CounterViewModel {
+class MockCounterViewModel extends _i1.Mock
+    implements _i2.CounterPageViewModel {
   @override
   bool get isClosed => (super.noSuchMethod(
         Invocation.getter(#isClosed),
@@ -55,11 +56,11 @@ class MockCounterViewModel extends _i1.Mock implements _i2.CounterViewModel {
       ) as _i3.Stream<int>);
 
   @override
-  _i3.Stream<_i4.CounterEvent> get eventStream => (super.noSuchMethod(
+  _i3.Stream<_i4.CounterPageEvent> get eventStream => (super.noSuchMethod(
         Invocation.getter(#eventStream),
-        returnValue: _i3.Stream<_i4.CounterEvent>.empty(),
-        returnValueForMissingStub: _i3.Stream<_i4.CounterEvent>.empty(),
-      ) as _i3.Stream<_i4.CounterEvent>);
+        returnValue: _i3.Stream<_i4.CounterPageEvent>.empty(),
+        returnValueForMissingStub: _i3.Stream<_i4.CounterPageEvent>.empty(),
+      ) as _i3.Stream<_i4.CounterPageEvent>);
 
   @override
   void add() => super.noSuchMethod(
@@ -90,7 +91,7 @@ class MockCounterViewModel extends _i1.Mock implements _i2.CounterViewModel {
       );
 
   @override
-  void emitEvent(_i4.CounterEvent? event) => super.noSuchMethod(
+  void emitEvent(_i4.CounterPageEvent? event) => super.noSuchMethod(
         Invocation.method(
           #emitEvent,
           [event],

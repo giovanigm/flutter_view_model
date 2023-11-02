@@ -1,5 +1,5 @@
-import 'package:example/page/counter/counter_page.dart';
-import 'package:example/view_model/counter/counter_view_model.dart';
+import 'package:example/pages/counter/counter_page.dart';
+import 'package:example/pages/counter/counter_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -8,7 +8,7 @@ import 'package:view_model/view_model.dart';
 
 import 'counter_page_test.mocks.dart';
 
-@GenerateNiceMocks([MockSpec<CounterViewModel>()])
+@GenerateNiceMocks([MockSpec<CounterPageViewModel>()])
 void main() {
   group("Counter Page", () {
     setUp(() {});
@@ -19,7 +19,7 @@ void main() {
       when(viewModel.state).thenReturn(2);
 
       await widgetTester.pumpWidget(MaterialApp(
-          home: ViewModelProvider<CounterViewModel>(
+          home: ViewModelProvider<CounterPageViewModel>(
         create: (context) => viewModel,
         child: const CounterPage(),
       )));
@@ -29,10 +29,10 @@ void main() {
   });
 
   group("Counter Page", () {
-    late CounterViewModel viewModel;
+    late CounterPageViewModel viewModel;
 
     setUp(() {
-      viewModel = CounterViewModel();
+      viewModel = CounterPageViewModel();
     });
 
     tearDown(() {
@@ -52,18 +52,11 @@ void main() {
       await tester.pump();
 
       expect(find.text('1'), findsOneWidget);
-      expect(find.text('Odd'), findsOneWidget);
-
-      // Wait for SnackBar to dismiss
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pump();
 
       expect(find.text('2'), findsOneWidget);
-      expect(find.text('Even'), findsOneWidget);
     });
   });
 }

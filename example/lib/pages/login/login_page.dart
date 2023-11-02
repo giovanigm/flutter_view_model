@@ -1,18 +1,19 @@
-import 'package:example/page/widgets/loading_overlay.dart';
-import 'package:example/view_model/login/login_event.dart';
-import 'package:example/view_model/login/login_state.dart';
-import 'package:example/view_model/login/login_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:view_model/view_model.dart';
 
 import '../widgets/example_text_field.dart';
+import '../widgets/loading_overlay.dart';
+import 'login_page_event.dart';
+import 'login_page_state.dart';
+import 'login_page_view_model.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelConsumer<LoginViewModel, LoginState, LoginEvent>(
+    return ViewModelConsumer<LoginPageViewModel, LoginPageState,
+        LoginPageEvent>(
       onEvent: (context, event) {
         event.when(
           startLoading: () => LoadingOverlay.of(context).open(),
@@ -35,7 +36,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 ExampleTextField(
                   hintText: "Email",
-                  onChanged: context.read<LoginViewModel>().setEmail,
+                  onChanged: context.read<LoginPageViewModel>().setEmail,
                   errorText: state.emailTextError,
                   success: state.isValidEmail,
                 ),
@@ -44,7 +45,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 ExampleTextField(
                   hintText: "Password",
-                  onChanged: context.read<LoginViewModel>().setPassword,
+                  onChanged: context.read<LoginPageViewModel>().setPassword,
                   obscureText: true,
                   errorText: state.passwordTextError,
                   success: state.isValidPassword,
@@ -54,7 +55,8 @@ class LoginPage extends StatelessWidget {
                 ),
                 FilledButton(
                   onPressed: state.isValidPassword && state.isValidEmail
-                      ? () async => await context.read<LoginViewModel>().login()
+                      ? () async =>
+                          await context.read<LoginPageViewModel>().login()
                       : null,
                   style: FilledButton.styleFrom(
                     disabledBackgroundColor: Theme.of(context).disabledColor,

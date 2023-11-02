@@ -1,4 +1,4 @@
-sealed class SplashEvent {
+sealed class SplashPageEvent {
   T when<T>({
     required T Function(LoadedSplashEvent) loaded,
   }) {
@@ -8,7 +8,7 @@ sealed class SplashEvent {
   }
 }
 
-class LoadedSplashEvent extends SplashEvent {
+class LoadedSplashEvent extends SplashPageEvent {
   final String route;
 
   LoadedSplashEvent._({required this.route});

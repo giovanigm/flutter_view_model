@@ -1,11 +1,11 @@
-import 'package:example/view_model/counter/counter_view_model.dart';
+import 'package:example/pages/counter/counter_page_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  late CounterViewModel viewModel;
+  late CounterPageViewModel viewModel;
 
   setUp(() {
-    viewModel = CounterViewModel();
+    viewModel = CounterPageViewModel();
   });
 
   tearDown(() {
@@ -14,7 +14,6 @@ void main() {
 
   test("", () async {
     expect(viewModel.stateStream, emitsInOrder([1, 2, 3]));
-    expect(viewModel.eventStream, emitsInOrder([false, true, false]));
     viewModel.add();
     viewModel.add();
     viewModel.add();
