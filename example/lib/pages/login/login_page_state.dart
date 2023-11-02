@@ -22,23 +22,9 @@ class LoginPageState {
         isValidPassword: isValidPassword,
       );
 
-  LoginPageState emailNotFound() => LoginPageState._(
-        emailTextError: 'Email not found',
-        passwordTextError: passwordTextError,
-        isValidEmail: false,
-        isValidPassword: isValidPassword,
-      );
-
   LoginPageState invalidPassword() => LoginPageState._(
         emailTextError: emailTextError,
         passwordTextError: 'Password must have at least 6 characters',
-        isValidEmail: isValidEmail,
-        isValidPassword: false,
-      );
-
-  LoginPageState incorrectPassword() => LoginPageState._(
-        emailTextError: emailTextError,
-        passwordTextError: 'Incorrect password',
         isValidEmail: isValidEmail,
         isValidPassword: false,
       );

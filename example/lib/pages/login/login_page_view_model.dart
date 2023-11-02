@@ -29,22 +29,24 @@ class LoginPageViewModel extends ViewModel<LoginPageState, LoginPageEvent> {
   }
 
   Future<void> login() async {
-    emitEvent(LoadingLoginEvent.start());
-    await Future.delayed(const Duration(seconds: 2));
+    try {
+      emitEvent(LoadingLoginEvent.start());
+      await Future.delayed(const Duration(seconds: 2));
 
-    if (_correctEmail != _email) {
+      if (_correctEmail != _email || _correctPassword != _password) {
+        emitEvent(LoadingLoginEvent.stop());
+        emitEvent(AuthenticationErrorLoginEvent("Incorrect email or password"));
+        return;
+      }
+
+      final preferences = await SharedPreferences.getInstance();
+      preferences.setBool('isLogged', true);
+
       emitEvent(LoadingLoginEvent.stop());
-      return emitState(state.emailNotFound());
-    }
-
-    if (_correctPassword != _password) {
+      emitEvent(NavigateLoginEvent());
+    } catch (error) {
       emitEvent(LoadingLoginEvent.stop());
-      return emitState(state.incorrectPassword());
+      emitEvent(AuthenticationErrorLoginEvent("Something wrong happened!"));
     }
-    final preferences = await SharedPreferences.getInstance();
-    preferences.setBool('isLogged', true);
-
-    emitEvent(LoadingLoginEvent.stop());
-    emitEvent(NavigateLoginEvent());
   }
 }

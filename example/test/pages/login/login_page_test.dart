@@ -83,37 +83,6 @@ void main() {
             findsOneWidget);
       });
 
-      testWidgets("Should render email not found state correctly",
-          (widgetTester) async {
-        when(viewModel.state)
-            .thenReturn(LoginPageState.initialState().emailNotFound());
-
-        await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginPageViewModel>(
-          create: (context) => viewModel,
-          child: const LoginPage(),
-        )));
-
-        expect(
-            find.byWidgetPredicate((widget) =>
-                widget is ExampleTextField &&
-                widget.errorText == 'Email not found' &&
-                widget.success == false &&
-                widget.hintText == 'Email'),
-            findsOneWidget);
-        expect(
-            find.byWidgetPredicate((widget) =>
-                widget is ExampleTextField &&
-                widget.errorText == null &&
-                widget.success == false &&
-                widget.hintText == 'Password'),
-            findsOneWidget);
-        expect(
-            find.byWidgetPredicate(
-                (widget) => widget is FilledButton && widget.onPressed == null),
-            findsOneWidget);
-      });
-
       testWidgets("Should render invalid password state correctly",
           (widgetTester) async {
         when(viewModel.state)
@@ -137,37 +106,6 @@ void main() {
                 widget is ExampleTextField &&
                 widget.errorText ==
                     'Password must have at least 6 characters' &&
-                widget.success == false &&
-                widget.hintText == 'Password'),
-            findsOneWidget);
-        expect(
-            find.byWidgetPredicate(
-                (widget) => widget is FilledButton && widget.onPressed == null),
-            findsOneWidget);
-      });
-
-      testWidgets("Should render incorrect password state correctly",
-          (widgetTester) async {
-        when(viewModel.state)
-            .thenReturn(LoginPageState.initialState().incorrectPassword());
-
-        await widgetTester.pumpWidget(MaterialApp(
-            home: ViewModelProvider<LoginPageViewModel>(
-          create: (context) => viewModel,
-          child: const LoginPage(),
-        )));
-
-        expect(
-            find.byWidgetPredicate((widget) =>
-                widget is ExampleTextField &&
-                widget.errorText == null &&
-                widget.success == false &&
-                widget.hintText == 'Email'),
-            findsOneWidget);
-        expect(
-            find.byWidgetPredicate((widget) =>
-                widget is ExampleTextField &&
-                widget.errorText == 'Incorrect password' &&
                 widget.success == false &&
                 widget.hintText == 'Password'),
             findsOneWidget);
@@ -341,6 +279,34 @@ void main() {
         await widgetTester.pump(const Duration(seconds: 1));
 
         expect(find.byType(CircularProgressIndicator), findsNothing);
+      });
+
+      testWidgets("Should show snackbar on AuthenticationErrorLoginEvent",
+          (widgetTester) async {
+        when(viewModel.state).thenReturn(LoginPageState.initialState());
+        const message = "message";
+        final broadcastStream =
+            Stream.value(AuthenticationErrorLoginEvent(message))
+                .asBroadcastStream();
+        when(viewModel.eventStream).thenAnswer(
+          (_) => broadcastStream.map((event) {
+            when(viewModel.lastEvent).thenReturn(event);
+            return event;
+          }),
+        );
+
+        await widgetTester.pumpWidget(MaterialApp(
+            builder: (context, child) => LoadingOverlay(child: child!),
+            home: ViewModelProvider<LoginPageViewModel>(
+              create: (context) => viewModel,
+              child: const LoginPage(),
+            )));
+
+        await widgetTester.pump(const Duration(seconds: 1));
+        await widgetTester.pump(const Duration(seconds: 1));
+        await widgetTester.pump(const Duration(seconds: 1));
+
+        expect(find.byType(SnackBar), findsOneWidget);
       });
 
       testWidgets("Should change page correctly on navigate event",

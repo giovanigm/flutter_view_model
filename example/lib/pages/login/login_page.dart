@@ -15,9 +15,12 @@ class LoginPage extends StatelessWidget {
     return ViewModelConsumer<LoginPageViewModel, LoginPageState,
         LoginPageEvent>(
       onEvent: (context, event) {
+        FocusScope.of(context).unfocus();
         event.when(
           startLoading: () => LoadingOverlay.of(context).open(),
           stopLoading: () => LoadingOverlay.of(context).close(),
+          showError: (message) => ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(message))),
           navigate: (event) =>
               Navigator.of(context).pushReplacementNamed(event.route),
         );
