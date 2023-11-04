@@ -9,13 +9,5 @@ sealed class SplashPageEvent {
 }
 
 class LoadedSplashEvent extends SplashPageEvent {
-  final String route;
-
-  LoadedSplashEvent._({required this.route});
-
-  factory LoadedSplashEvent.userLogged() =>
-      LoadedSplashEvent._(route: '/counter');
-
-  factory LoadedSplashEvent.userNotLoggedIn() =>
-      LoadedSplashEvent._(route: '/login');
+  final String route = '/main';
 }

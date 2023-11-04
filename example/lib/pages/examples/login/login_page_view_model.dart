@@ -43,7 +43,7 @@ class LoginPageViewModel extends ViewModel<LoginPageState, LoginPageEvent> {
       preferences.setBool('isLogged', true);
 
       emitEvent(LoadingLoginEvent.stop());
-      emitEvent(NavigateLoginEvent());
+      emitEvent(AuthenticatedLoginEvent());
     } catch (error) {
       emitEvent(LoadingLoginEvent.stop());
       emitEvent(AuthenticationErrorLoginEvent("Something wrong happened!"));

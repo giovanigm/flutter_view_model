@@ -5,8 +5,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
-import 'package:example/pages/counter/counter_page_event.dart' as _i4;
-import 'package:example/pages/counter/counter_page_view_model.dart' as _i2;
+import 'package:example/pages/examples/counter/counter_page_view_model.dart'
+    as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -56,11 +56,11 @@ class MockCounterPageViewModel extends _i1.Mock
       ) as _i3.Stream<int>);
 
   @override
-  _i3.Stream<_i4.CounterPageEvent> get eventStream => (super.noSuchMethod(
+  _i3.Stream<void> get eventStream => (super.noSuchMethod(
         Invocation.getter(#eventStream),
-        returnValue: _i3.Stream<_i4.CounterPageEvent>.empty(),
-        returnValueForMissingStub: _i3.Stream<_i4.CounterPageEvent>.empty(),
-      ) as _i3.Stream<_i4.CounterPageEvent>);
+        returnValue: _i3.Stream<void>.empty(),
+        returnValueForMissingStub: _i3.Stream<void>.empty(),
+      ) as _i3.Stream<void>);
 
   @override
   void add() => super.noSuchMethod(
@@ -72,16 +72,6 @@ class MockCounterPageViewModel extends _i1.Mock
       );
 
   @override
-  _i3.Future<void> logout() => (super.noSuchMethod(
-        Invocation.method(
-          #logout,
-          [],
-        ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
-
-  @override
   void emitState(int? state) => super.noSuchMethod(
         Invocation.method(
           #emitState,
@@ -91,7 +81,7 @@ class MockCounterPageViewModel extends _i1.Mock
       );
 
   @override
-  void emitEvent(_i4.CounterPageEvent? event) => super.noSuchMethod(
+  void emitEvent(dynamic event) => super.noSuchMethod(
         Invocation.method(
           #emitEvent,
           [event],

@@ -1,7 +1,7 @@
-import 'package:example/pages/login/login_page.dart';
-import 'package:example/pages/login/login_page_event.dart';
-import 'package:example/pages/login/login_page_state.dart';
-import 'package:example/pages/login/login_page_view_model.dart';
+import 'package:example/pages/examples/login/login_page.dart';
+import 'package:example/pages/examples/login/login_page_event.dart';
+import 'package:example/pages/examples/login/login_page_state.dart';
+import 'package:example/pages/examples/login/login_page_view_model.dart';
 import 'package:example/pages/widgets/example_text_field.dart';
 import 'package:example/pages/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
@@ -309,12 +309,12 @@ void main() {
         expect(find.byType(SnackBar), findsOneWidget);
       });
 
-      testWidgets("Should change page correctly on navigate event",
+      testWidgets("Should show success SnackBar on authenticated",
           (widgetTester) async {
         when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         final broadcastStream =
-            Stream.value(NavigateLoginEvent()).asBroadcastStream();
+            Stream.value(AuthenticatedLoginEvent()).asBroadcastStream();
 
         when(viewModel.eventStream).thenAnswer(
           (_) => broadcastStream.map((event) {
@@ -323,20 +323,18 @@ void main() {
           }),
         );
 
-        final routes = {
-          '/counter': (context) => const FakeCounterPage(),
-        };
-
         await widgetTester.pumpWidget(MaterialApp(
-            routes: routes,
             home: ViewModelProvider<LoginPageViewModel>(
-              create: (context) => viewModel,
-              child: const LoginPage(),
-            )));
+          create: (context) => viewModel,
+          child: const LoginPage(),
+        )));
 
-        await widgetTester.pumpAndSettle();
+        await widgetTester.pump(const Duration(seconds: 1));
+        await widgetTester.pump(const Duration(seconds: 1));
+        await widgetTester.pump(const Duration(seconds: 1));
 
-        expect(find.byType(FakeCounterPage), findsOneWidget);
+        expect(find.byType(SnackBar), findsOneWidget);
+        expect(find.text("User Authenticated!"), findsOneWidget);
       });
     });
   });
