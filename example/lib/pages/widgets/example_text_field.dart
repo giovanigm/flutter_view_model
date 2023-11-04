@@ -8,12 +8,14 @@ class ExampleTextField extends StatelessWidget {
     this.onChanged,
     this.errorText,
     this.success = false,
+    this.helperText,
   });
 
   final String hintText;
   final bool obscureText;
   final void Function(String)? onChanged;
   final String? errorText;
+  final String? helperText;
   final bool success;
 
   @override
@@ -28,8 +30,9 @@ class ExampleTextField extends StatelessWidget {
           ?.copyWith(color: Theme.of(context).colorScheme.onBackground),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(16),
-        hintText: hintText,
+        labelText: hintText,
         errorText: errorText,
+        helperText: helperText,
         hintStyle: Theme.of(context)
             .textTheme
             .labelLarge

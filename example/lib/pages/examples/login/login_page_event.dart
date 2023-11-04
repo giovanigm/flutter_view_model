@@ -3,12 +3,12 @@ sealed class LoginPageEvent {
     required T Function() startLoading,
     required T Function() stopLoading,
     required T Function(String message) showError,
-    required T Function(NavigateLoginEvent) navigate,
+    required T Function() onAuthenticated,
   }) {
     return switch (this) {
       LoadingLoginEvent value => value.started ? startLoading() : stopLoading(),
       AuthenticationErrorLoginEvent value => showError(value.message),
-      NavigateLoginEvent value => navigate(value),
+      AuthenticatedLoginEvent _ => onAuthenticated(),
     };
   }
 }
@@ -28,6 +28,4 @@ class AuthenticationErrorLoginEvent extends LoginPageEvent {
   AuthenticationErrorLoginEvent(this.message);
 }
 
-class NavigateLoginEvent extends LoginPageEvent {
-  final String route = '/counter';
-}
+class AuthenticatedLoginEvent extends LoginPageEvent {}
