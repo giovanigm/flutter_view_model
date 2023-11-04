@@ -1,4 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:view_model/view_model.dart';
 
 import 'login_page_event.dart';
@@ -38,9 +37,6 @@ class LoginPageViewModel extends ViewModel<LoginPageState, LoginPageEvent> {
         emitEvent(AuthenticationErrorLoginEvent("Incorrect email or password"));
         return;
       }
-
-      final preferences = await SharedPreferences.getInstance();
-      preferences.setBool('isLogged', true);
 
       emitEvent(LoadingLoginEvent.stop());
       emitEvent(AuthenticatedLoginEvent());
