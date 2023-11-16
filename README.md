@@ -1,4 +1,4 @@
-# Flutter View Model
+# flutter_view_model
 
 [![codecov](https://codecov.io/gh/giovanigm/flutter_view_model/graph/badge.svg?token=B9YX8Y0GYZ)](https://codecov.io/gh/giovanigm/flutter_view_model)
 
