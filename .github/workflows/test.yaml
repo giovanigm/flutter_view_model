@@ -34,4 +34,9 @@ jobs:
       - name: Analyze
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
       - name: Run unit tests
-        run: flutter test --no-pub
+        run: flutter test --no-pub --coverage --test-randomize-ordering-seed random
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/lcov.info
