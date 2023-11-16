@@ -6,9 +6,9 @@ import 'package:example/pages/widgets/example_text_field.dart';
 import 'package:example/pages/widgets/loading_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_view_model/flutter_view_model.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:view_model/view_model.dart';
 
 import 'login_page_test.mocks.dart';
 

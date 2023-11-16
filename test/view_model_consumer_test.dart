@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:view_model/view_model.dart';
+import 'package:flutter_view_model/flutter_view_model.dart';
 
 class _TestViewModel extends ViewModel<int, int> {
   _TestViewModel() : super(initialState: 0);

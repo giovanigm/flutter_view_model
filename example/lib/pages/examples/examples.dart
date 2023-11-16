@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:view_model/view_model.dart';
+import 'package:flutter_view_model/flutter_view_model.dart';
 
 import 'counter/counter_page.dart';
 import 'counter/counter_page_view_model.dart';

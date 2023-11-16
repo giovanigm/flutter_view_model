@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:view_model/view_model.dart';
+import 'package:flutter_view_model/flutter_view_model.dart';
 
 import '../../widgets/example_text_field.dart';
 import '../../widgets/loading_overlay.dart';
