@@ -103,7 +103,7 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
     });
 
     _eventSubscription = _viewModel.eventStream.listen((event) {
-      if (widget.reactToEventWhen?.call(_event, event) ?? _event != event) {
+      if (widget.reactToEventWhen?.call(_event, event) ?? true) {
         widget.onEvent?.call(context, event);
       }
       _event = event;

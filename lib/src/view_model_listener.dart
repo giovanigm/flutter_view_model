@@ -17,7 +17,7 @@ class ViewModelListener<VM extends ViewModel<dynamic, EVENT>, EVENT>
 
   final VM? viewModel;
 
-  final void Function(BuildContext context, EVENT event)? onEvent;
+  final void Function(BuildContext context, EVENT event) onEvent;
 
   final bool Function(EVENT? previous, EVENT current)? reactToEventWhen;
 
@@ -88,8 +88,8 @@ class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
 
   void _subscribe() {
     _eventSubscription = _viewModel.eventStream.listen((event) {
-      if (widget.reactToEventWhen?.call(_event, event) ?? _event != event) {
-        widget.onEvent?.call(context, event);
+      if (widget.reactToEventWhen?.call(_event, event) ?? true) {
+        widget.onEvent.call(context, event);
       }
       _event = event;
     });

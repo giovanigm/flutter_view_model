@@ -253,10 +253,13 @@ void main() {
 
       expect(events, [1]);
 
+      viewModel.emitEvent(1);
+      await tester.pump();
+
       viewModel.emitEvent(2);
       await tester.pump();
 
-      expect(events, [1, 2]);
+      expect(events, [1, 1, 2]);
     });
 
     testWidgets(
