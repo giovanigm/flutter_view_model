@@ -11,10 +11,13 @@ import 'package:flutter/foundation.dart';
 /// and the last event emitted can be accessed via the [lastEvent] getter.
 ///
 /// ```dart
-/// class CounterViewModel extends ViewModel<int, void> {
-///   CounterViewModel() : super(initialState: 0);
+/// class MyViewModel extends ViewModel<MyState, MyEvent> {
+///   MyViewModel() : super(initialState: MyState());
 ///
-///   void increment() => emitState(state + 1);
+///   void doSomething() {
+///     emitState(MyState());
+///     emitEvent(MyEvent());
+///   }
 /// }
 /// ```
 abstract class ViewModel<State, Event> {
@@ -37,9 +40,13 @@ abstract class ViewModel<State, Event> {
   Event? get lastEvent => _event;
 
   /// The state stream
+  ///
+  /// Will be canceled after [close] is called.
   Stream<State> get stateStream => _stateController.stream;
 
   /// The event stream
+  ///
+  /// Will be canceled after [close] is called.
   Stream<Event> get eventStream => _eventController.stream;
 
   /// Whether the [ViewModel] is closed.
