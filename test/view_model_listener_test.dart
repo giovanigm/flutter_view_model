@@ -6,7 +6,7 @@ class _TestViewModel extends ViewModel<void, int> {
   _TestViewModel() : super(initialState: null);
 
   void increment() {
-    emitEvent((lastEvent ?? 0) + 1);
+    emitEffect((lastEffect ?? 0) + 1);
   }
 }
 
@@ -16,9 +16,9 @@ const _incrementKey = Key("increment");
 
 class _TestWidget extends StatefulWidget {
   final VoidCallback? onBuild;
-  final void Function(int? previous, int current)? onReactToEventWhenCalled;
+  final void Function(int? previous, int current)? onReactToEffectWhenCalled;
 
-  const _TestWidget({this.onBuild, this.onReactToEventWhenCalled});
+  const _TestWidget({this.onBuild, this.onReactToEffectWhenCalled});
 
   @override
   State<_TestWidget> createState() => _TestWidgetState();
@@ -46,9 +46,9 @@ class _TestWidgetState extends State<_TestWidget> {
       home: Scaffold(
         body: ViewModelListener<_TestViewModel, int>(
           viewModel: viewModel,
-          onEvent: (context, event) {},
-          reactToEventWhen: (previous, current) {
-            widget.onReactToEventWhenCalled?.call(previous, current);
+          onEffect: (context, effect) {},
+          reactToEffectWhen: (previous, current) {
+            widget.onReactToEffectWhenCalled?.call(previous, current);
             return true;
           },
           child: Column(
@@ -101,117 +101,118 @@ void main() {
       await tester.pumpWidget(
         ViewModelListener<_TestViewModel, int>(
           viewModel: viewModel,
-          onEvent: (context, event) {},
+          onEffect: (context, effect) {},
           child: const SizedBox(key: targetKey),
         ),
       );
       expect(find.byKey(targetKey), findsOneWidget);
     });
 
-    testWidgets("should call onEvent for every event", (tester) async {
-      final List<int> events = [];
+    testWidgets("should call onEffect for every effect", (tester) async {
+      final List<int> effects = [];
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        onEvent: (context, event) {
-          events.add(event);
+        onEffect: (context, effect) {
+          effects.add(effect);
         },
         child: const Placeholder(),
       ));
 
-      viewModel.emitEvent(1);
+      viewModel.emitEffect(1);
       await tester.pump();
 
-      expect(events, [1]);
+      expect(effects, [1]);
 
-      viewModel.emitEvent(1);
+      viewModel.emitEffect(1);
       await tester.pump();
 
-      viewModel.emitEvent(2);
+      viewModel.emitEffect(2);
       await tester.pump();
 
-      expect(events, [1, 1, 2]);
+      expect(effects, [1, 1, 2]);
     });
 
     testWidgets(
-        "should call reactToEventWhen with correct previous event and correct current event",
+        "should call reactToEffectWhen with correct previous effect and correct current effect",
         (tester) async {
-      int? previousEvent;
-      late int currentEvent;
+      int? previousEffect;
+      late int currentEffect;
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        reactToEventWhen: (previous, current) {
-          previousEvent = previous;
-          currentEvent = current;
+        reactToEffectWhen: (previous, current) {
+          previousEffect = previous;
+          currentEffect = current;
           return true;
         },
-        onEvent: (context, event) {},
+        onEffect: (context, effect) {},
         child: const Placeholder(),
       ));
 
-      viewModel.emitEvent(1);
+      viewModel.emitEffect(1);
       await tester.pump();
 
-      expect(previousEvent, null);
-      expect(currentEvent, 1);
+      expect(previousEffect, null);
+      expect(currentEffect, 1);
 
-      viewModel.emitEvent(2);
+      viewModel.emitEffect(2);
       await tester.pump();
 
-      expect(previousEvent, 1);
-      expect(currentEvent, 2);
+      expect(previousEffect, 1);
+      expect(currentEffect, 2);
     });
 
-    testWidgets("should call onEvent if reactToEventWhen returns true",
+    testWidgets("should call onEffect if reactToEffectWhen returns true",
         (tester) async {
-      final List<int> events = [];
+      final List<int> effects = [];
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        reactToEventWhen: (previous, current) => true,
-        onEvent: (context, event) {
-          events.add(event);
+        reactToEffectWhen: (previous, current) => true,
+        onEffect: (context, effect) {
+          effects.add(effect);
         },
         child: const Placeholder(),
       ));
 
-      viewModel.emitEvent(1);
+      viewModel.emitEffect(1);
       await tester.pump();
 
-      expect(events, [1]);
+      expect(effects, [1]);
 
-      viewModel.emitEvent(2);
+      viewModel.emitEffect(2);
       await tester.pump();
 
-      expect(events, [1, 2]);
+      expect(effects, [1, 2]);
     });
 
-    testWidgets("should not call onEvent if reactToEventWhen returns false",
+    testWidgets("should not call onEffect if reactToEffectWhen returns false",
         (tester) async {
-      final List<int> events = [];
+      final List<int> effects = [];
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        reactToEventWhen: (previous, current) => false,
-        onEvent: (context, event) {
-          events.add(event);
+        reactToEffectWhen: (previous, current) => false,
+        onEffect: (context, effect) {
+          effects.add(effect);
         },
         child: const Placeholder(),
       ));
 
-      viewModel.emitEvent(1);
+      viewModel.emitEffect(1);
       await tester.pump();
 
-      expect(events, []);
+      expect(effects, []);
 
-      viewModel.emitEvent(2);
+      viewModel.emitEffect(2);
       await tester.pump();
 
-      expect(events, []);
+      expect(effects, []);
     });
 
-    testWidgets("should not trigger builds on events received", (tester) async {
+    testWidgets("should not trigger builds on effects received",
+        (tester) async {
       int builds = 0;
       await tester.pumpWidget(ViewModelProvider(
         create: (context) => viewModel,
@@ -222,10 +223,10 @@ void main() {
         ),
       ));
 
-      viewModel.emitEvent(1);
+      viewModel.emitEffect(1);
       await tester.pump();
 
-      viewModel.emitEvent(2);
+      viewModel.emitEffect(2);
       await tester.pump();
 
       expect(builds, 1);
@@ -234,13 +235,13 @@ void main() {
     testWidgets(
         "should retrieve the ViewModel from the context if it is not provided",
         (tester) async {
-      final List<int> events = [];
+      final List<int> effects = [];
 
       await tester.pumpWidget(
         ViewModelProvider(
           create: (context) => viewModel,
           child: ViewModelListener<_TestViewModel, int>(
-            onEvent: (context, event) => events.add(event),
+            onEffect: (context, effect) => effects.add(effect),
             child: const SizedBox(),
           ),
         ),
@@ -249,66 +250,66 @@ void main() {
       viewModel.increment();
       await tester.pump();
 
-      expect(events, [1]);
+      expect(effects, [1]);
 
       viewModel.increment();
       await tester.pump();
 
-      expect(events, [1, 2]);
+      expect(effects, [1, 2]);
     });
 
     testWidgets(
         "should keep subscription if ViewModel is changed at runtime to the same ViewModel",
         (tester) async {
-      int? lastEvent;
-      late int currentEvent;
+      int? lastEffect;
+      late int currentEffect;
       await tester.pumpWidget(_TestWidget(
-        onReactToEventWhenCalled: (previous, current) {
-          lastEvent = previous;
-          currentEvent = current;
+        onReactToEffectWhenCalled: (previous, current) {
+          lastEffect = previous;
+          currentEffect = current;
         },
       ));
 
       await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
-      expect(lastEvent, null);
-      expect(currentEvent, 1);
+      expect(lastEffect, null);
+      expect(currentEffect, 1);
 
       await tester.tap(find.byKey(_sameViewModelKey));
 
       await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
-      expect(lastEvent, 1);
-      expect(currentEvent, 2);
+      expect(lastEffect, 1);
+      expect(currentEffect, 2);
     });
 
     testWidgets(
         "should change subscription if ViewModel is changed at runtime to a different ViewModel",
         (tester) async {
-      int? lastEvent;
-      late int currentEvent;
+      int? lastEffect;
+      late int currentEffect;
       await tester.pumpWidget(_TestWidget(
-        onReactToEventWhenCalled: (previous, current) {
-          lastEvent = previous;
-          currentEvent = current;
+        onReactToEffectWhenCalled: (previous, current) {
+          lastEffect = previous;
+          currentEffect = current;
         },
       ));
 
       await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
-      expect(lastEvent, null);
-      expect(currentEvent, 1);
+      expect(lastEffect, null);
+      expect(currentEffect, 1);
 
       await tester.tap(find.byKey(_newViewModelKey));
 
       await tester.tap(find.byKey(_incrementKey));
       await tester.pump();
 
-      expect(lastEvent, null);
-      expect(currentEvent, 1);
+      expect(lastEffect, null);
+      expect(currentEffect, 1);
     });
 
     testWidgets("should update subscription when provided ViewModel is changed",
@@ -316,13 +317,13 @@ void main() {
       final firstViewModel = _TestViewModel();
       final secondViewModel = _TestViewModel();
 
-      final List<int> events = [];
+      final List<int> effects = [];
 
       await tester.pumpWidget(
         ViewModelProvider.value(
           value: firstViewModel,
           child: ViewModelListener<_TestViewModel, int>(
-            onEvent: (context, event) => events.add(event),
+            onEffect: (context, effect) => effects.add(effect),
             child: const SizedBox(),
           ),
         ),
@@ -334,7 +335,7 @@ void main() {
         ViewModelProvider.value(
           value: secondViewModel,
           child: ViewModelListener<_TestViewModel, int>(
-            onEvent: (context, event) => events.add(event),
+            onEffect: (context, effect) => effects.add(effect),
             child: const SizedBox(),
           ),
         ),
@@ -345,7 +346,7 @@ void main() {
       firstViewModel.increment();
       await tester.pump();
 
-      expect(events, [1, 1]);
+      expect(effects, [1, 1]);
 
       firstViewModel.close();
       secondViewModel.close();

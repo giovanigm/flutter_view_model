@@ -1,5 +1,5 @@
 import 'package:example/pages/examples/login/login_page.dart';
-import 'package:example/pages/examples/login/login_page_event.dart';
+import 'package:example/pages/examples/login/login_page_effect.dart';
 import 'package:example/pages/examples/login/login_page_state.dart';
 import 'package:example/pages/examples/login/login_page_view_model.dart';
 import 'package:example/pages/widgets/example_text_field.dart';
@@ -225,16 +225,16 @@ void main() {
         verify(viewModel.login());
       });
 
-      testWidgets("Should show loading on startLoadingEvent",
+      testWidgets("Should show loading on startLoadingEffect",
           (widgetTester) async {
         when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         final broadcastStream =
-            Stream.value(LoadingLoginEvent.start()).asBroadcastStream();
-        when(viewModel.eventStream).thenAnswer(
-          (_) => broadcastStream.map((event) {
-            when(viewModel.lastEvent).thenReturn(event);
-            return event;
+            Stream.value(LoadingLoginEffect.start()).asBroadcastStream();
+        when(viewModel.effectStream).thenAnswer(
+          (_) => broadcastStream.map((effect) {
+            when(viewModel.lastEffect).thenReturn(effect);
+            return effect;
           }),
         );
 
@@ -252,18 +252,18 @@ void main() {
         expect(find.byType(CircularProgressIndicator), findsOneWidget);
       });
 
-      testWidgets("Should close loading on stopLoadingEvent",
+      testWidgets("Should close loading on stopLoadingEffect",
           (widgetTester) async {
         when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         final broadcastStream =
-            Stream.value(LoadingLoginEvent.stop()).asBroadcastStream();
+            Stream.value(LoadingLoginEffect.stop()).asBroadcastStream();
 
-        when(viewModel.lastEvent).thenReturn(LoadingLoginEvent.start());
-        when(viewModel.eventStream).thenAnswer(
-          (_) => broadcastStream.map((event) {
-            when(viewModel.lastEvent).thenReturn(event);
-            return event;
+        when(viewModel.lastEffect).thenReturn(LoadingLoginEffect.start());
+        when(viewModel.effectStream).thenAnswer(
+          (_) => broadcastStream.map((effect) {
+            when(viewModel.lastEffect).thenReturn(effect);
+            return effect;
           }),
         );
 
@@ -281,17 +281,17 @@ void main() {
         expect(find.byType(CircularProgressIndicator), findsNothing);
       });
 
-      testWidgets("Should show snackbar on AuthenticationErrorLoginEvent",
+      testWidgets("Should show snackbar on AuthenticationErrorLoginEffect",
           (widgetTester) async {
         when(viewModel.state).thenReturn(LoginPageState.initialState());
         const message = "message";
         final broadcastStream =
-            Stream.value(AuthenticationErrorLoginEvent(message))
+            Stream.value(AuthenticationErrorLoginEffect(message))
                 .asBroadcastStream();
-        when(viewModel.eventStream).thenAnswer(
-          (_) => broadcastStream.map((event) {
-            when(viewModel.lastEvent).thenReturn(event);
-            return event;
+        when(viewModel.effectStream).thenAnswer(
+          (_) => broadcastStream.map((effect) {
+            when(viewModel.lastEffect).thenReturn(effect);
+            return effect;
           }),
         );
 
@@ -314,12 +314,12 @@ void main() {
         when(viewModel.state).thenReturn(LoginPageState.initialState());
 
         final broadcastStream =
-            Stream.value(AuthenticatedLoginEvent()).asBroadcastStream();
+            Stream.value(AuthenticatedLoginEffect()).asBroadcastStream();
 
-        when(viewModel.eventStream).thenAnswer(
-          (_) => broadcastStream.map((event) {
-            when(viewModel.lastEvent).thenReturn(event);
-            return event;
+        when(viewModel.effectStream).thenAnswer(
+          (_) => broadcastStream.map((effect) {
+            when(viewModel.lastEffect).thenReturn(effect);
+            return effect;
           }),
         );
 

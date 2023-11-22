@@ -135,16 +135,16 @@ void main() {
     });
 
     testWidgets(
-        "should call buildWhen with correct previous event and correct current event",
+        "should call buildWhen with correct previous effect and correct current effect",
         (tester) async {
-      int? previousEvent;
-      late int currentEvent;
+      int? previousEffect;
+      late int currentEffect;
 
       await tester.pumpWidget(ViewModelBuilder<_TestViewModel, int>(
         viewModel: viewModel,
         buildWhen: (previous, current) {
-          previousEvent = previous;
-          currentEvent = current;
+          previousEffect = previous;
+          currentEffect = current;
           return true;
         },
         builder: (context, state) {
@@ -156,15 +156,15 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(previousEvent, 0);
-      expect(currentEvent, 1);
+      expect(previousEffect, 0);
+      expect(currentEffect, 1);
 
       viewModel.emitState(2);
       await tester.pump();
       await tester.pump();
 
-      expect(previousEvent, 1);
-      expect(currentEvent, 2);
+      expect(previousEffect, 1);
+      expect(currentEffect, 2);
     });
 
     testWidgets("should call builder if buildWhen returns true",

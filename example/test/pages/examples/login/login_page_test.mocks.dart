@@ -5,7 +5,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
-import 'package:example/pages/examples/login/login_page_event.dart' as _i5;
+import 'package:example/pages/examples/login/login_page_effect.dart' as _i5;
 import 'package:example/pages/examples/login/login_page_state.dart' as _i2;
 import 'package:example/pages/examples/login/login_page_view_model.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
@@ -74,11 +74,11 @@ class MockLoginPageViewModel extends _i1.Mock
       ) as _i4.Stream<_i2.LoginPageState>);
 
   @override
-  _i4.Stream<_i5.LoginPageEvent> get eventStream => (super.noSuchMethod(
-        Invocation.getter(#eventStream),
-        returnValue: _i4.Stream<_i5.LoginPageEvent>.empty(),
-        returnValueForMissingStub: _i4.Stream<_i5.LoginPageEvent>.empty(),
-      ) as _i4.Stream<_i5.LoginPageEvent>);
+  _i4.Stream<_i5.LoginPageEffect> get effectStream => (super.noSuchMethod(
+        Invocation.getter(#effectStream),
+        returnValue: _i4.Stream<_i5.LoginPageEffect>.empty(),
+        returnValueForMissingStub: _i4.Stream<_i5.LoginPageEffect>.empty(),
+      ) as _i4.Stream<_i5.LoginPageEffect>);
 
   @override
   void setEmail(String? value) => super.noSuchMethod(
@@ -118,10 +118,10 @@ class MockLoginPageViewModel extends _i1.Mock
       );
 
   @override
-  void emitEvent(_i5.LoginPageEvent? event) => super.noSuchMethod(
+  void emitEffect(_i5.LoginPageEffect? effect) => super.noSuchMethod(
         Invocation.method(
-          #emitEvent,
-          [event],
+          #emitEffect,
+          [effect],
         ),
         returnValueForMissingStub: null,
       );

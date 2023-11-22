@@ -3,7 +3,7 @@ import 'package:flutter_view_model/flutter_view_model.dart';
 
 import '../../widgets/example_text_field.dart';
 import '../../widgets/loading_overlay.dart';
-import 'login_page_event.dart';
+import 'login_page_effect.dart';
 import 'login_page_state.dart';
 import 'login_page_view_model.dart';
 
@@ -13,10 +13,10 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelConsumer<LoginPageViewModel, LoginPageState,
-        LoginPageEvent>(
-      onEvent: (context, event) {
+        LoginPageEffect>(
+      onEffect: (context, effect) {
         FocusScope.of(context).unfocus();
-        event.when(
+        effect.when(
           startLoading: () => LoadingOverlay.of(context).open(),
           stopLoading: () => LoadingOverlay.of(context).close(),
           showError: (message) => ScaffoldMessenger.of(context)

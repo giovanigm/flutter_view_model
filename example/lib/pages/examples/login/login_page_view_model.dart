@@ -1,9 +1,9 @@
 import 'package:flutter_view_model/flutter_view_model.dart';
 
-import 'login_page_event.dart';
+import 'login_page_effect.dart';
 import 'login_page_state.dart';
 
-class LoginPageViewModel extends ViewModel<LoginPageState, LoginPageEvent> {
+class LoginPageViewModel extends ViewModel<LoginPageState, LoginPageEffect> {
   LoginPageViewModel() : super(initialState: LoginPageState.initialState());
 
   static const _correctEmail = 'email@email.com';
@@ -29,20 +29,21 @@ class LoginPageViewModel extends ViewModel<LoginPageState, LoginPageEvent> {
 
   Future<void> login() async {
     try {
-      emitEvent(LoadingLoginEvent.start());
+      emitEffect(LoadingLoginEffect.start());
       await Future.delayed(const Duration(seconds: 2));
 
       if (_correctEmail != _email || _correctPassword != _password) {
-        emitEvent(LoadingLoginEvent.stop());
-        emitEvent(AuthenticationErrorLoginEvent("Incorrect email or password"));
+        emitEffect(LoadingLoginEffect.stop());
+        emitEffect(
+            AuthenticationErrorLoginEffect("Incorrect email or password"));
         return;
       }
 
-      emitEvent(LoadingLoginEvent.stop());
-      emitEvent(AuthenticatedLoginEvent());
+      emitEffect(LoadingLoginEffect.stop());
+      emitEffect(AuthenticatedLoginEffect());
     } catch (error) {
-      emitEvent(LoadingLoginEvent.stop());
-      emitEvent(AuthenticationErrorLoginEvent("Something wrong happened!"));
+      emitEffect(LoadingLoginEffect.stop());
+      emitEffect(AuthenticationErrorLoginEffect("Something wrong happened!"));
     }
   }
 }

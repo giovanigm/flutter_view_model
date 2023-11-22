@@ -10,16 +10,16 @@ class ViewModelListener<VM extends ViewModel<dynamic, EVENT>, EVENT>
   const ViewModelListener({
     Key? key,
     this.viewModel,
-    required this.onEvent,
-    this.reactToEventWhen,
+    required this.onEffect,
+    this.reactToEffectWhen,
     required this.child,
   }) : super(key: key);
 
   final VM? viewModel;
 
-  final void Function(BuildContext context, EVENT event) onEvent;
+  final void Function(BuildContext context, EVENT effect) onEffect;
 
-  final bool Function(EVENT? previous, EVENT current)? reactToEventWhen;
+  final bool Function(EVENT? previous, EVENT current)? reactToEffectWhen;
 
   final Widget child;
 
@@ -31,14 +31,14 @@ class ViewModelListener<VM extends ViewModel<dynamic, EVENT>, EVENT>
 class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
     extends State<ViewModelListener<VM, EVENT>> {
   late VM _viewModel;
-  StreamSubscription<EVENT>? _eventSubscription;
-  EVENT? _event;
+  StreamSubscription<EVENT>? _effectSubscription;
+  EVENT? _effect;
 
   @override
   void initState() {
     super.initState();
     _viewModel = widget.viewModel ?? context.read<VM>();
-    _event = _viewModel.lastEvent;
+    _effect = _viewModel.lastEffect;
     _subscribe();
   }
 
@@ -48,9 +48,9 @@ class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
     final oldViewModel = oldWidget.viewModel ?? context.read<VM>();
     final currentViewModel = widget.viewModel ?? oldViewModel;
     if (oldViewModel != currentViewModel) {
-      if (_eventSubscription != null) {
+      if (_effectSubscription != null) {
         _viewModel = currentViewModel;
-        _event = _viewModel.lastEvent;
+        _effect = _viewModel.lastEffect;
         _unsubscribe();
       }
       _subscribe();
@@ -62,9 +62,9 @@ class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
     super.didChangeDependencies();
     final viewModel = widget.viewModel ?? context.read<VM>();
     if (_viewModel != viewModel) {
-      if (_eventSubscription != null) {
+      if (_effectSubscription != null) {
         _viewModel = viewModel;
-        _event = _viewModel.lastEvent;
+        _effect = _viewModel.lastEffect;
         _unsubscribe();
       }
       _subscribe();
@@ -87,16 +87,16 @@ class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
   }
 
   void _subscribe() {
-    _eventSubscription = _viewModel.eventStream.listen((event) {
-      if (widget.reactToEventWhen?.call(_event, event) ?? true) {
-        widget.onEvent.call(context, event);
+    _effectSubscription = _viewModel.effectStream.listen((effect) {
+      if (widget.reactToEffectWhen?.call(_effect, effect) ?? true) {
+        widget.onEffect.call(context, effect);
       }
-      _event = event;
+      _effect = effect;
     });
   }
 
   void _unsubscribe() {
-    _eventSubscription?.cancel();
-    _eventSubscription = null;
+    _effectSubscription?.cancel();
+    _effectSubscription = null;
   }
 }

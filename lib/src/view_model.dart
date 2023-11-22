@@ -2,26 +2,26 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-abstract class ViewModel<State, Event> {
+abstract class ViewModel<State, Effect> {
   ViewModel({required State initialState}) {
     _state = initialState;
   }
 
   late State _state;
 
-  Event? _event;
+  Effect? _effect;
 
   late final _stateController = StreamController<State>.broadcast();
 
-  late final _eventController = StreamController<Event>.broadcast();
+  late final _effectController = StreamController<Effect>.broadcast();
 
   State get state => _state;
 
-  Event? get lastEvent => _event;
+  Effect? get lastEffect => _effect;
 
   Stream<State> get stateStream => _stateController.stream;
 
-  Stream<Event> get eventStream => _eventController.stream;
+  Stream<Effect> get effectStream => _effectController.stream;
 
   bool isClosed = false;
 
@@ -39,14 +39,14 @@ abstract class ViewModel<State, Event> {
     }
   }
 
-  void emitEvent(Event event) {
+  void emitEffect(Effect effect) {
     try {
       if (isClosed) {
-        debugPrint('Cannot emit new events after calling close');
+        debugPrint('Cannot emit new effects after calling close');
         return;
       }
-      _event = event;
-      _eventController.add(event);
+      _effect = effect;
+      _effectController.add(effect);
     } catch (error) {
       rethrow;
     }
@@ -55,7 +55,7 @@ abstract class ViewModel<State, Event> {
   @mustCallSuper
   Future<void> close() async {
     await _stateController.close();
-    await _eventController.close();
+    await _effectController.close();
     isClosed = true;
   }
 }
