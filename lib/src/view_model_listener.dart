@@ -5,16 +5,16 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
-/// A Widget that reacts to `Events` emitted by [ViewModel] and invokes
-/// [onEvent] callback.
+/// A Widget that reacts to `Effects` emitted by [ViewModel] and invokes
+/// [onEffect] callback.
 ///
 /// It should be used when you only need to deal with side effects such as
 /// navigating after some validation, displaying feedback SnackBars, and similar
 /// cases.
 ///
 /// ```dart
-/// ViewModelListener<MyViewModel, MyEvent>() {
-///   onEvent: (context, event) {
+/// ViewModelListener<MyViewModel, MyEffect>() {
+///   onEffect: (context, effect) {
 ///     // do something
 ///   },
 ///   child: const SizedBox(),
@@ -37,10 +37,10 @@ class ViewModelListener<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
 
   final VM? viewModel;
 
-  /// The callback that will be invoked for every [event] emitted by [viewModel].
+  /// The callback that will be invoked for every [effect] emitted by [viewModel].
   final void Function(BuildContext context, EFFECT effect) onEffect;
 
-  /// Controls whether [onEvent] is called or not.
+  /// Controls whether [onEffect] is called or not.
   final bool Function(EFFECT? previous, EFFECT current)? reactToEffectWhen;
 
   /// The Widget to be rendered.

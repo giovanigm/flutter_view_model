@@ -2,21 +2,21 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-/// A [ViewModel] can manage the `State` of a View and send `Events` to it.
+/// A [ViewModel] can manage the `State` of a View and send `Effects` to it.
 ///
 /// Every [ViewModel] requires an initial state which will be the
 /// state of the [ViewModel] before [emitState] has been called.
 ///
 /// The current state of a [ViewModel] can be accessed via the [state] getter
-/// and the last event emitted can be accessed via the [lastEvent] getter.
+/// and the last effect emitted can be accessed via the [lastEffect] getter.
 ///
 /// ```dart
-/// class MyViewModel extends ViewModel<MyState, MyEvent> {
+/// class MyViewModel extends ViewModel<MyState, MyEffect> {
 ///   MyViewModel() : super(initialState: MyState());
 ///
 ///   void doSomething() {
 ///     emitState(MyState());
-///     emitEvent(MyEvent());
+///     emitEffect(MyEffect());
 ///   }
 /// }
 /// ```
@@ -36,7 +36,7 @@ abstract class ViewModel<State, Effect> {
   /// The current [state]
   State get state => _state;
 
-  /// The last event
+  /// The last effect
   Effect? get lastEffect => _effect;
 
   /// The state stream
@@ -44,7 +44,7 @@ abstract class ViewModel<State, Effect> {
   /// Will be canceled after [close] is called.
   Stream<State> get stateStream => _stateController.stream;
 
-  /// The event stream
+  /// The effect stream
   ///
   /// Will be canceled after [close] is called.
   Stream<Effect> get effectStream => _effectController.stream;
@@ -69,7 +69,7 @@ abstract class ViewModel<State, Effect> {
     }
   }
 
-  /// Emits a new [event]
+  /// Emits a new [effect]
   void emitEffect(Effect effect) {
     try {
       if (isClosed) {
