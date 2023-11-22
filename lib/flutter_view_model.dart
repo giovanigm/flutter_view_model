@@ -1,4 +1,4 @@
-library;
+library flutter_view_model;
 
 export 'package:provider/provider.dart'
     show ProviderNotFoundException, ReadContext, SelectContext, WatchContext;

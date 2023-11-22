@@ -56,8 +56,8 @@ class MockCounterPageViewModel extends _i1.Mock
       ) as _i3.Stream<int>);
 
   @override
-  _i3.Stream<void> get eventStream => (super.noSuchMethod(
-        Invocation.getter(#eventStream),
+  _i3.Stream<void> get effectStream => (super.noSuchMethod(
+        Invocation.getter(#effectStream),
         returnValue: _i3.Stream<void>.empty(),
         returnValueForMissingStub: _i3.Stream<void>.empty(),
       ) as _i3.Stream<void>);
@@ -81,10 +81,10 @@ class MockCounterPageViewModel extends _i1.Mock
       );
 
   @override
-  void emitEvent(dynamic event) => super.noSuchMethod(
+  void emitEffect(dynamic effect) => super.noSuchMethod(
         Invocation.method(
-          #emitEvent,
-          [event],
+          #emitEffect,
+          [effect],
         ),
         returnValueForMissingStub: null,
       );

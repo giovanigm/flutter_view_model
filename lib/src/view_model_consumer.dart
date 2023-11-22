@@ -5,59 +5,59 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
-class ViewModelConsumer<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
+class ViewModelConsumer<VM extends ViewModel<STATE, EFFECT>, STATE, EFFECT>
     extends StatefulWidget {
   const ViewModelConsumer({
     Key? key,
     required this.builder,
     this.viewModel,
-    this.onEvent,
+    this.onEffect,
     this.buildWhen,
-    this.reactToEventWhen,
+    this.reactToEffectWhen,
   }) : super(key: key);
 
   final VM? viewModel;
 
   final Widget Function(BuildContext context, STATE state) builder;
 
-  final void Function(BuildContext context, EVENT event)? onEvent;
+  final void Function(BuildContext context, EFFECT effect)? onEffect;
 
   final bool Function(STATE previous, STATE current)? buildWhen;
 
-  final bool Function(EVENT? previous, EVENT current)? reactToEventWhen;
+  final bool Function(EFFECT? previous, EFFECT current)? reactToEffectWhen;
 
   @override
-  State<ViewModelConsumer<VM, STATE, EVENT>> createState() =>
-      _ViewModelConsumerState<VM, STATE, EVENT>();
+  State<ViewModelConsumer<VM, STATE, EFFECT>> createState() =>
+      _ViewModelConsumerState<VM, STATE, EFFECT>();
 }
 
-class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
-    extends State<ViewModelConsumer<VM, STATE, EVENT>> {
+class _ViewModelConsumerState<VM extends ViewModel<STATE, EFFECT>, STATE,
+    EFFECT> extends State<ViewModelConsumer<VM, STATE, EFFECT>> {
   late VM _viewModel;
-  StreamSubscription<EVENT>? _eventSubscription;
+  StreamSubscription<EFFECT>? _effectSubscription;
   StreamSubscription<STATE>? _stateSubscription;
   late STATE _state;
-  EVENT? _event;
+  EFFECT? _effect;
 
   @override
   void initState() {
     super.initState();
     _viewModel = widget.viewModel ?? context.read<VM>();
     _state = _viewModel.state;
-    _event = _viewModel.lastEvent;
+    _effect = _viewModel.lastEffect;
     _subscribe();
   }
 
   @override
-  void didUpdateWidget(ViewModelConsumer<VM, STATE, EVENT> oldWidget) {
+  void didUpdateWidget(ViewModelConsumer<VM, STATE, EFFECT> oldWidget) {
     super.didUpdateWidget(oldWidget);
     final oldViewModel = oldWidget.viewModel ?? context.read<VM>();
     final currentViewModel = widget.viewModel ?? oldViewModel;
     if (oldViewModel != currentViewModel) {
-      if (_stateSubscription != null && _eventSubscription != null) {
+      if (_stateSubscription != null && _effectSubscription != null) {
         _viewModel = currentViewModel;
         _state = _viewModel.state;
-        _event = _viewModel.lastEvent;
+        _effect = _viewModel.lastEffect;
         _unsubscribe();
       }
       _subscribe();
@@ -69,10 +69,10 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
     super.didChangeDependencies();
     final viewModel = widget.viewModel ?? context.read<VM>();
     if (_viewModel != viewModel) {
-      if (_stateSubscription != null && _eventSubscription != null) {
+      if (_stateSubscription != null && _effectSubscription != null) {
         _viewModel = viewModel;
         _state = _viewModel.state;
-        _event = _viewModel.lastEvent;
+        _effect = _viewModel.lastEffect;
         _unsubscribe();
       }
       _subscribe();
@@ -102,18 +102,18 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EVENT>, STATE, EVENT>
       _state = state;
     });
 
-    _eventSubscription = _viewModel.eventStream.listen((event) {
-      if (widget.reactToEventWhen?.call(_event, event) ?? true) {
-        widget.onEvent?.call(context, event);
+    _effectSubscription = _viewModel.effectStream.listen((effect) {
+      if (widget.reactToEffectWhen?.call(_effect, effect) ?? true) {
+        widget.onEffect?.call(context, effect);
       }
-      _event = event;
+      _effect = effect;
     });
   }
 
   void _unsubscribe() {
     _stateSubscription?.cancel();
     _stateSubscription = null;
-    _eventSubscription?.cancel();
-    _eventSubscription = null;
+    _effectSubscription?.cancel();
+    _effectSubscription = null;
   }
 }

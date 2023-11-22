@@ -27,14 +27,14 @@ void main() {
     });
   });
 
-  group("lastEvent", () {
-    test("should emit null if no event was emitted", () {
-      expect(viewModel.lastEvent, null);
+  group("lastEffect", () {
+    test("should emit null if no effect was emitted", () {
+      expect(viewModel.lastEffect, null);
     });
 
-    test("should emit last event", () {
-      viewModel.emitEvent(1);
-      expect(viewModel.lastEvent, 1);
+    test("should emit last effect", () {
+      viewModel.emitEffect(1);
+      expect(viewModel.lastEffect, 1);
     });
   });
 
@@ -65,29 +65,29 @@ void main() {
     });
   });
 
-  group("emitEvent", () {
-    test("should emit events in correct order", () async {
-      expect(viewModel.eventStream, emitsInOrder([1, 2, 3, emitsDone]));
-      viewModel.emitEvent(1);
-      viewModel.emitEvent(2);
-      viewModel.emitEvent(3);
+  group("emitEffect", () {
+    test("should emit effects in correct order", () async {
+      expect(viewModel.effectStream, emitsInOrder([1, 2, 3, emitsDone]));
+      viewModel.emitEffect(1);
+      viewModel.emitEffect(2);
+      viewModel.emitEffect(3);
       await viewModel.close();
     });
 
-    test("should not emit new events after close", () async {
-      expect(viewModel.eventStream, emitsInOrder([1, 2, emitsDone]));
-      viewModel.emitEvent(1);
-      viewModel.emitEvent(2);
+    test("should not emit new effects after close", () async {
+      expect(viewModel.effectStream, emitsInOrder([1, 2, emitsDone]));
+      viewModel.emitEffect(1);
+      viewModel.emitEffect(2);
       await viewModel.close();
-      viewModel.emitEvent(3);
+      viewModel.emitEffect(3);
     });
 
-    test("should allow emit the same event", () async {
-      expect(viewModel.eventStream, emitsInOrder([1, 1, 2, 2, emitsDone]));
-      viewModel.emitEvent(1);
-      viewModel.emitEvent(1);
-      viewModel.emitEvent(2);
-      viewModel.emitEvent(2);
+    test("should allow emit the same effect", () async {
+      expect(viewModel.effectStream, emitsInOrder([1, 1, 2, 2, emitsDone]));
+      viewModel.emitEffect(1);
+      viewModel.emitEffect(1);
+      viewModel.emitEffect(2);
+      viewModel.emitEffect(2);
       await viewModel.close();
     });
   });
@@ -95,12 +95,12 @@ void main() {
   group("close", () {
     test("should close stateStream", () async {
       await viewModel.close();
-      expect(viewModel.eventStream, emitsDone);
+      expect(viewModel.effectStream, emitsDone);
     });
 
-    test("should close eventStream", () async {
+    test("should close effectStream", () async {
       await viewModel.close();
-      expect(viewModel.eventStream, emitsDone);
+      expect(viewModel.effectStream, emitsDone);
     });
   });
 }
