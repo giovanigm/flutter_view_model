@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
-class ViewModelListener<VM extends ViewModel<dynamic, EVENT>, EVENT>
+class ViewModelListener<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
     extends StatefulWidget {
   const ViewModelListener({
     Key? key,
@@ -17,22 +17,22 @@ class ViewModelListener<VM extends ViewModel<dynamic, EVENT>, EVENT>
 
   final VM? viewModel;
 
-  final void Function(BuildContext context, EVENT effect) onEffect;
+  final void Function(BuildContext context, EFFECT effect) onEffect;
 
-  final bool Function(EVENT? previous, EVENT current)? reactToEffectWhen;
+  final bool Function(EFFECT? previous, EFFECT current)? reactToEffectWhen;
 
   final Widget child;
 
   @override
-  State<ViewModelListener<VM, EVENT>> createState() =>
-      _ViewModelListenerState<VM, EVENT>();
+  State<ViewModelListener<VM, EFFECT>> createState() =>
+      _ViewModelListenerState<VM, EFFECT>();
 }
 
-class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
-    extends State<ViewModelListener<VM, EVENT>> {
+class _ViewModelListenerState<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
+    extends State<ViewModelListener<VM, EFFECT>> {
   late VM _viewModel;
-  StreamSubscription<EVENT>? _effectSubscription;
-  EVENT? _effect;
+  StreamSubscription<EFFECT>? _effectSubscription;
+  EFFECT? _effect;
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _ViewModelListenerState<VM extends ViewModel<dynamic, EVENT>, EVENT>
   }
 
   @override
-  void didUpdateWidget(ViewModelListener<VM, EVENT> oldWidget) {
+  void didUpdateWidget(ViewModelListener<VM, EFFECT> oldWidget) {
     super.didUpdateWidget(oldWidget);
     final oldViewModel = oldWidget.viewModel ?? context.read<VM>();
     final currentViewModel = widget.viewModel ?? oldViewModel;
