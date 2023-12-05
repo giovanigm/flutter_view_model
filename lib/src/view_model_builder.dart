@@ -5,6 +5,23 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
+/// A widget that uses `States` emitted by the [ViewModel] to construct new
+/// widgets through the [builder] function.
+///
+/// If you also need to react to `Effects`, please see [ViewModelConsumer].
+///
+/// ```dart
+/// ViewModelBuilder<MyViewModel, MyState>() {
+///   builder: (context, state) {
+///     return MyWidget();
+///   },
+/// }
+/// ```
+///
+/// If [viewModel] is not provided, [ViewModelBuilder] will look up the widget
+/// tree using [ViewModelProvider] and the current `BuildContext` for a
+/// compatible ViewModel.
+///
 class ViewModelBuilder<VM extends ViewModel<STATE, dynamic>, STATE>
     extends StatefulWidget {
   const ViewModelBuilder({
@@ -14,10 +31,22 @@ class ViewModelBuilder<VM extends ViewModel<STATE, dynamic>, STATE>
     this.buildWhen,
   }) : super(key: key);
 
+  /// The [ViewModel] that [ViewModelBuilder] will react to.
+  ///
+  /// If [viewModel] is not provided, [ViewModelBuilder] will look up the widget
+  /// tree using [ViewModelProvider] and the current `BuildContext` for a
+  /// compatible ViewModel.
   final VM? viewModel;
 
+  /// Builds a new widget every time the [viewModel] emits a new [state],
+  /// and the [buildWhen] function returns true.
   final Widget Function(BuildContext context, STATE state) builder;
 
+  /// Controls when [builder] should be called by using the [previous] state and
+  /// the [current] state.
+  ///
+  /// The default behavior is to always call [builder] when receiving a new
+  /// state from [viewModel].
   final bool Function(STATE previous, STATE current)? buildWhen;
 
   @override
