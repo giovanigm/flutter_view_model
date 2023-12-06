@@ -5,6 +5,27 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
+/// A widget that uses both `States` and `Effects` emitted by the [ViewModel] to
+/// construct new widgets and react to effects.
+///
+/// If you need to react only either to `States` or `Effects`, see
+/// [ViewModelBuilder] and [ViewModelListener].
+///
+/// ```dart
+/// ViewModelConsumer<MyViewModel, MyState, MyEffect>() {
+///   onEffect: (context, effect) {
+///     // do something
+///   },
+///   builder: (context, state) {
+///     return MyWidget();
+///   },
+/// }
+/// ```
+///
+/// If [viewModel] is not provided, [ViewModelConsumer] will look up the widget
+/// tree using [ViewModelProvider] and the current `BuildContext` for a
+/// compatible ViewModel.
+///
 class ViewModelConsumer<VM extends ViewModel<STATE, EFFECT>, STATE, EFFECT>
     extends StatefulWidget {
   const ViewModelConsumer({
@@ -16,14 +37,33 @@ class ViewModelConsumer<VM extends ViewModel<STATE, EFFECT>, STATE, EFFECT>
     this.reactToEffectWhen,
   }) : super(key: key);
 
+  /// The [ViewModel] that [ViewModelConsumer] will react to.
+  ///
+  /// If [viewModel] is not provided, [ViewModelConsumer] will look up the
+  /// widget tree using [ViewModelProvider] and the current `BuildContext` for a
+  /// compatible ViewModel.
   final VM? viewModel;
 
+  /// Builds a new widget every time the [viewModel] emits a new [state],
+  /// and the [buildWhen] function returns true.
   final Widget Function(BuildContext context, STATE state) builder;
 
+  /// Is invoked every time the [viewModel] emits a new [effect],
+  /// and the [reactToEffectWhen] function returns true.
   final void Function(BuildContext context, EFFECT effect)? onEffect;
 
+  /// Controls when [builder] should be called by using the [previous] state and
+  /// the [current] state.
+  ///
+  /// The default behavior is to always call [builder] when receiving a new
+  /// state from [viewModel].
   final bool Function(STATE previous, STATE current)? buildWhen;
 
+  /// Controls when [onEffect] should be called by using the [previous] effect
+  /// and the [current] state.
+  ///
+  /// The default behavior is to always call [onEffect] when receiving a new
+  /// effect from [viewModel].
   final bool Function(EFFECT? previous, EFFECT current)? reactToEffectWhen;
 
   @override
@@ -102,12 +142,15 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EFFECT>, STATE,
       _state = state;
     });
 
-    _effectSubscription = _viewModel.effectStream.listen((effect) {
-      if (widget.reactToEffectWhen?.call(_effect, effect) ?? true) {
-        widget.onEffect?.call(context, effect);
-      }
-      _effect = effect;
-    });
+    final onEffect = widget.onEffect;
+    if (onEffect != null) {
+      _effectSubscription = _viewModel.effectStream.listen((effect) {
+        if (widget.reactToEffectWhen?.call(_effect, effect) ?? true) {
+          onEffect(context, effect);
+        }
+        _effect = effect;
+      });
+    }
   }
 
   void _unsubscribe() {

@@ -5,6 +5,28 @@ import 'package:provider/provider.dart';
 
 import 'view_model.dart';
 
+/// A Widget that reacts to `Effects` emitted by [ViewModel] and invokes
+/// [onEffect] callback.
+///
+/// It should be used when you only need to deal with side effects such as
+/// navigating after some validation, displaying feedback SnackBars, and similar
+/// cases.
+///
+/// If you also need to react to `States`, please see [ViewModelConsumer].
+///
+/// ```dart
+/// ViewModelListener<MyViewModel, MyEffect>() {
+///   onEffect: (context, effect) {
+///     // do something
+///   },
+///   child: const SizedBox(),
+/// }
+/// ```
+///
+/// If [viewModel] is not provided, [ViewModelListener] will look up the widget
+/// tree using [ViewModelProvider] and the current `BuildContext` for a
+/// compatible ViewModel.
+///
 class ViewModelListener<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
     extends StatefulWidget {
   const ViewModelListener({
@@ -15,12 +37,25 @@ class ViewModelListener<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
     required this.child,
   }) : super(key: key);
 
+  /// The [ViewModel] that [ViewModelListener] will listen to.
+  ///
+  /// If [viewModel] is not provided, [ViewModelListener] will look up the
+  /// widget tree using [ViewModelProvider] and the current `BuildContext` for a
+  /// compatible ViewModel.
   final VM? viewModel;
 
+  /// Is invoked every time the [viewModel] emits a new [effect],
+  /// and the [reactToEffectWhen] function returns true.
   final void Function(BuildContext context, EFFECT effect) onEffect;
 
+  /// Controls when [onEffect] should be called by using the [previous] effect
+  /// and the [current] state.
+  ///
+  /// The default behavior is to always call [onEffect] when receiving a new
+  /// effect from [viewModel].
   final bool Function(EFFECT? previous, EFFECT current)? reactToEffectWhen;
 
+  /// The Widget to be rendered.
   final Widget child;
 
   @override

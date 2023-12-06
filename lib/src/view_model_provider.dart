@@ -4,6 +4,24 @@ import 'package:provider/single_child_widget.dart';
 
 import 'view_model.dart';
 
+/// Provides a [ViewModel] created through the [create] function to descendant
+/// widgets.
+///
+/// Widgets below in the tree can access the provided [ViewModel] through
+/// `ViewModelProvider.of(context)`.
+///
+/// ```dart
+/// ViewModelProvider<MyViewModel>() {
+///   create: (context) => MyViewModel(),
+///   child: const SizedBox(),
+/// }
+/// ```
+///
+/// Automatically closes the created [ViewModel]. If you want to retain the
+/// ViewModel instance, use the [value] constructor.
+///
+/// The [ViewModel] instance will be created only when requested. For the
+/// opposite behavior, set `lazy = false`.
 class ViewModelProvider<T extends ViewModel<Object?, Object?>>
     extends SingleChildStatelessWidget {
   const ViewModelProvider({
@@ -15,6 +33,11 @@ class ViewModelProvider<T extends ViewModel<Object?, Object?>>
         _value = null,
         super(key: key, child: child);
 
+  /// Passes a previously created instance of [ViewModel] to the tree below.
+  ///
+  /// Does not automatically close the [ViewModel], but ensure that it is
+  /// created by a [ViewModelProvider] higher in the tree using the [create]
+  /// function so that it can be closed when no longer needed.
   const ViewModelProvider.value({
     required T value,
     Key? key,
@@ -24,14 +47,24 @@ class ViewModelProvider<T extends ViewModel<Object?, Object?>>
         lazy = true,
         super(key: key, child: child);
 
+  /// The child [Widget].
   final Widget? child;
 
+  /// Controls wheter [create] will be called right away.
+  ///
+  /// The default value is `false`.
   final bool lazy;
 
   final Create<T>? _create;
 
   final T? _value;
 
+  /// Function that allows descendant widgets of this [ViewModelProvider] to
+  /// access the provided [ViewModel] using:
+  ///
+  /// ```dart
+  /// ViewModelProvider.of<MyViewModel>(context);
+  /// ```
   static T of<T extends ViewModel<Object?, Object?>>(
     BuildContext context, {
     bool listen = false,
