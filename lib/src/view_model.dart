@@ -54,7 +54,22 @@ abstract class ViewModel<State, Effect> {
   /// A [ViewModel] is considered closed once [close] is called.
   bool isClosed = false;
 
-  /// Emits a new [state]
+  ///Emits a new [state] to its subscribers.
+  ///
+  /// This method is responsible for handling the emission of states. It checks
+  /// if the ViewModel is closed before attempting to emit a new state.
+  ///
+  /// Parameters:
+  /// - [state]: The new state to be emitted by the ViewModel.
+  ///
+  /// If the ViewModel is closed, a debug message is printed, and the state
+  /// emission is skipped.
+  /// If the provided state is equal to the current state, the emission is also
+  /// skipped.
+  /// Otherwise, the new state is set, and it is added to the state controller.
+  ///
+  /// Throws:
+  /// - If an error occurs during the state emission, it is rethrown.
   void emitState(State state) {
     try {
       if (isClosed) {
@@ -69,7 +84,19 @@ abstract class ViewModel<State, Effect> {
     }
   }
 
-  /// Emits a new [effect]
+  /// Emits a new [effect] to its subscribers.
+  ///
+  /// This method is responsible for handling the emission of effects. It checks
+  /// if the ViewModel is closed before attempting to emit a new effect.
+  ///
+  /// Parameters:
+  /// - [effect]: The new effect to be emitted by the ViewModel.
+  ///
+  /// If the ViewModel is closed, a debug message is printed, and the effect emission is skipped.
+  /// Otherwise, the new effect is set, and it is added to the effect controller.
+  ///
+  /// Throws:
+  /// - If an error occurs during the effect emission, it is rethrown.
   void emitEffect(Effect effect) {
     try {
       if (isClosed) {
@@ -83,7 +110,17 @@ abstract class ViewModel<State, Effect> {
     }
   }
 
-  /// Closes the [ViewModel]
+  /// Closes the ViewModel, completing associated controllers.
+  ///
+  /// It closes the state and effect controllers, marking the ViewModel as closed.
+  ///
+  /// During the close operation, the state controller and effect controller are closed using
+  /// asynchronous operations, and the isClosed flag is set to true.
+  ///
+  /// Subclasses should call super.close() as part of their overridden close methods.
+  ///
+  /// Throws:
+  /// - Any error that occurs during the closing of controllers is propagated.
   @mustCallSuper
   Future<void> close() async {
     await _stateController.close();
