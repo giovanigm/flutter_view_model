@@ -14,7 +14,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelConsumer<LoginPageViewModel, LoginPageState,
         LoginPageEffect>(
-      onEffect: (context, effect) {
+      listener: (context, effect) {
         FocusScope.of(context).unfocus();
         effect.when(
           startLoading: () => LoadingOverlay.of(context).open(),

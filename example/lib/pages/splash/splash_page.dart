@@ -10,7 +10,7 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelListener<SplashPageViewModel, SplashPageEffect>(
-      onEffect: (context, effect) {
+      listener: (context, effect) {
         effect.when(
           loaded: (effect) =>
               Navigator.of(context).pushReplacementNamed(effect.route),

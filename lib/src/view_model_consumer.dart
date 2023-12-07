@@ -13,7 +13,7 @@ import 'view_model.dart';
 ///
 /// ```dart
 /// ViewModelConsumer<MyViewModel, MyState, MyEffect>() {
-///   onEffect: (context, effect) {
+///   listener: (context, effect) {
 ///     // do something
 ///   },
 ///   builder: (context, state) {
@@ -32,9 +32,9 @@ class ViewModelConsumer<VM extends ViewModel<STATE, EFFECT>, STATE, EFFECT>
     Key? key,
     required this.builder,
     this.viewModel,
-    this.onEffect,
+    this.listener,
     this.buildWhen,
-    this.reactToEffectWhen,
+    this.listenWhen,
   }) : super(key: key);
 
   /// The [ViewModel] that [ViewModelConsumer] will react to.
@@ -49,8 +49,8 @@ class ViewModelConsumer<VM extends ViewModel<STATE, EFFECT>, STATE, EFFECT>
   final Widget Function(BuildContext context, STATE state) builder;
 
   /// Is invoked every time the [viewModel] emits a new [effect],
-  /// and the [reactToEffectWhen] function returns true.
-  final void Function(BuildContext context, EFFECT effect)? onEffect;
+  /// and the [listenWhen] function returns true.
+  final void Function(BuildContext context, EFFECT effect)? listener;
 
   /// Controls when [builder] should be called by using the [previous] state and
   /// the [current] state.
@@ -59,12 +59,12 @@ class ViewModelConsumer<VM extends ViewModel<STATE, EFFECT>, STATE, EFFECT>
   /// state from [viewModel].
   final bool Function(STATE previous, STATE current)? buildWhen;
 
-  /// Controls when [onEffect] should be called by using the [previous] effect
+  /// Controls when [listener] should be called by using the [previous] effect
   /// and the [current] state.
   ///
-  /// The default behavior is to always call [onEffect] when receiving a new
+  /// The default behavior is to always call [listener] when receiving a new
   /// effect from [viewModel].
-  final bool Function(EFFECT? previous, EFFECT current)? reactToEffectWhen;
+  final bool Function(EFFECT? previous, EFFECT current)? listenWhen;
 
   @override
   State<ViewModelConsumer<VM, STATE, EFFECT>> createState() =>
@@ -142,11 +142,11 @@ class _ViewModelConsumerState<VM extends ViewModel<STATE, EFFECT>, STATE,
       _state = state;
     });
 
-    final onEffect = widget.onEffect;
-    if (onEffect != null) {
+    final listener = widget.listener;
+    if (listener != null) {
       _effectSubscription = _viewModel.effectStream.listen((effect) {
-        if (widget.reactToEffectWhen?.call(_effect, effect) ?? true) {
-          onEffect(context, effect);
+        if (widget.listenWhen?.call(_effect, effect) ?? true) {
+          listener(context, effect);
         }
         _effect = effect;
       });
