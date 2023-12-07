@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'view_model.dart';
 
 /// A Widget that reacts to `Effects` emitted by [ViewModel] and invokes
-/// [onEffect] callback.
+/// [listener] callback.
 ///
 /// It should be used when you only need to deal with side effects such as
 /// navigating after some validation, displaying feedback SnackBars, and similar
@@ -16,7 +16,7 @@ import 'view_model.dart';
 ///
 /// ```dart
 /// ViewModelListener<MyViewModel, MyEffect>() {
-///   onEffect: (context, effect) {
+///   listener: (context, effect) {
 ///     // do something
 ///   },
 ///   child: const SizedBox(),
@@ -32,8 +32,8 @@ class ViewModelListener<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
   const ViewModelListener({
     Key? key,
     this.viewModel,
-    required this.onEffect,
-    this.reactToEffectWhen,
+    required this.listener,
+    this.listenWhen,
     required this.child,
   }) : super(key: key);
 
@@ -45,15 +45,15 @@ class ViewModelListener<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
   final VM? viewModel;
 
   /// Is invoked every time the [viewModel] emits a new [effect],
-  /// and the [reactToEffectWhen] function returns true.
-  final void Function(BuildContext context, EFFECT effect) onEffect;
+  /// and the [listenWhen] function returns true.
+  final void Function(BuildContext context, EFFECT effect) listener;
 
-  /// Controls when [onEffect] should be called by using the [previous] effect
+  /// Controls when [listener] should be called by using the [previous] effect
   /// and the [current] state.
   ///
-  /// The default behavior is to always call [onEffect] when receiving a new
+  /// The default behavior is to always call [listener] when receiving a new
   /// effect from [viewModel].
-  final bool Function(EFFECT? previous, EFFECT current)? reactToEffectWhen;
+  final bool Function(EFFECT? previous, EFFECT current)? listenWhen;
 
   /// The Widget to be rendered.
   final Widget child;
@@ -123,8 +123,8 @@ class _ViewModelListenerState<VM extends ViewModel<dynamic, EFFECT>, EFFECT>
 
   void _subscribe() {
     _effectSubscription = _viewModel.effectStream.listen((effect) {
-      if (widget.reactToEffectWhen?.call(_effect, effect) ?? true) {
-        widget.onEffect.call(context, effect);
+      if (widget.listenWhen?.call(_effect, effect) ?? true) {
+        widget.listener.call(context, effect);
       }
       _effect = effect;
     });

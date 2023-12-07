@@ -46,8 +46,8 @@ class _TestWidgetState extends State<_TestWidget> {
       home: Scaffold(
         body: ViewModelListener<_TestViewModel, int>(
           viewModel: viewModel,
-          onEffect: (context, effect) {},
-          reactToEffectWhen: (previous, current) {
+          listener: (context, effect) {},
+          listenWhen: (previous, current) {
             widget.onReactToEffectWhenCalled?.call(previous, current);
             return true;
           },
@@ -101,19 +101,19 @@ void main() {
       await tester.pumpWidget(
         ViewModelListener<_TestViewModel, int>(
           viewModel: viewModel,
-          onEffect: (context, effect) {},
+          listener: (context, effect) {},
           child: const SizedBox(key: targetKey),
         ),
       );
       expect(find.byKey(targetKey), findsOneWidget);
     });
 
-    testWidgets("should call onEffect for every effect", (tester) async {
+    testWidgets("should call listener for every effect", (tester) async {
       final List<int> effects = [];
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        onEffect: (context, effect) {
+        listener: (context, effect) {
           effects.add(effect);
         },
         child: const Placeholder(),
@@ -134,19 +134,19 @@ void main() {
     });
 
     testWidgets(
-        "should call reactToEffectWhen with correct previous effect and correct current effect",
+        "should call listenWhen with correct previous effect and correct current effect",
         (tester) async {
       int? previousEffect;
       late int currentEffect;
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        reactToEffectWhen: (previous, current) {
+        listenWhen: (previous, current) {
           previousEffect = previous;
           currentEffect = current;
           return true;
         },
-        onEffect: (context, effect) {},
+        listener: (context, effect) {},
         child: const Placeholder(),
       ));
 
@@ -163,14 +163,14 @@ void main() {
       expect(currentEffect, 2);
     });
 
-    testWidgets("should call onEffect if reactToEffectWhen returns true",
+    testWidgets("should call listener if listenWhen returns true",
         (tester) async {
       final List<int> effects = [];
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        reactToEffectWhen: (previous, current) => true,
-        onEffect: (context, effect) {
+        listenWhen: (previous, current) => true,
+        listener: (context, effect) {
           effects.add(effect);
         },
         child: const Placeholder(),
@@ -187,14 +187,14 @@ void main() {
       expect(effects, [1, 2]);
     });
 
-    testWidgets("should not call onEffect if reactToEffectWhen returns false",
+    testWidgets("should not call listener if listenWhen returns false",
         (tester) async {
       final List<int> effects = [];
 
       await tester.pumpWidget(ViewModelListener<_TestViewModel, int>(
         viewModel: viewModel,
-        reactToEffectWhen: (previous, current) => false,
-        onEffect: (context, effect) {
+        listenWhen: (previous, current) => false,
+        listener: (context, effect) {
           effects.add(effect);
         },
         child: const Placeholder(),
@@ -241,7 +241,7 @@ void main() {
         ViewModelProvider(
           create: (context) => viewModel,
           child: ViewModelListener<_TestViewModel, int>(
-            onEffect: (context, effect) => effects.add(effect),
+            listener: (context, effect) => effects.add(effect),
             child: const SizedBox(),
           ),
         ),
@@ -323,7 +323,7 @@ void main() {
         ViewModelProvider.value(
           value: firstViewModel,
           child: ViewModelListener<_TestViewModel, int>(
-            onEffect: (context, effect) => effects.add(effect),
+            listener: (context, effect) => effects.add(effect),
             child: const SizedBox(),
           ),
         ),
@@ -335,7 +335,7 @@ void main() {
         ViewModelProvider.value(
           value: secondViewModel,
           child: ViewModelListener<_TestViewModel, int>(
-            onEffect: (context, effect) => effects.add(effect),
+            listener: (context, effect) => effects.add(effect),
             child: const SizedBox(),
           ),
         ),
