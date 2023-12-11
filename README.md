@@ -76,7 +76,7 @@ ViewModelProvider<MyViewModel>() {
 }
 ```
 
-Automatically closes the created `ViewModel`. If you want to retain the ViewModel instance, use the `value` constructor.
+Automatically closes the created `ViewModel`. If you want to retain the ViewModel instance, use the `value` builder.
 
 The `ViewModel` instance will be created only when requested. For the opposite behavior, set `lazy = false`.
 
@@ -125,6 +125,45 @@ ViewModelBuilder<MyViewModel, MyState>(
   },
   builder: (context, state) {
     // Construct and return the widget based on MyViewModel's state.
+  }
+)
+```
+
+**ViewModelConsumer** 
+
+Reveals a `builder` and `listener` to respond to novel conditions. `ViewModelConsumer` is akin to an embedded `ViewModelListener` and `ViewModelBuilder` but minimizes the need for repetitive code. It is recommended to employ `ViewModelConsumer` exclusively when both reassembling the UI and executing additional responses to state alterations in the `viewModel` are necessary. `ViewModelConsumer` accepts a mandatory `builder`, and an optional `listener`, `viewModel`, `buildWhen`, and `listenWhen`.
+
+If the `viewModel` parameter is excluded, `ViewModelConsumer` will autonomously conduct a search employing
+`ViewModelProvider` and the present `BuildContext`.
+
+```dart
+ViewModelConsumer<MyViewModel, MyState>(
+  listener: (context, state) {
+    // perform actions here based on MyViewModel's state
+  },
+  builder: (context, state) {
+    return MyWidget();
+  }
+)
+```
+
+For more detailed control over when `listener` and `builder` are invoked, optional `listenWhen` and `buildWhen` can be implemented. The `listenWhen` and `buildWhen` will be triggered on each `viewModel` `state` alteration. They each evaluate the preceding `state` and ongoing `state` and must yield a `bool` determining whether the `builder` and/or `listener` function will be invoked. The previous `state` will commence with the `state` of the `viewModel` upon `ViewModelConsumer` initialization. `listenWhen` and `buildWhen` are voluntary, and if not enacted, they will default to `true`.
+
+```dart
+ViewModelConsumer<MyViewModel, MyState>(
+  listenWhen: (previous, current) {
+    // return true to invoke listener with state
+    // return false to to skip listener
+  },
+  listener: (context, state) {
+    // perform actions here based on MyViewModel's state
+  },
+  buildWhen: (previous, current) {
+    // return true to invoke builder with state
+    // return false to to skip builder
+  },
+  builder: (context, state) {
+    return MyWidget();
   }
 )
 ```
