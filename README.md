@@ -88,6 +88,47 @@ The `ViewModel` instance will be created only when requested. For the opposite b
 
 #### Widgets
 
+**ViewModelBuilder**
+
+The `ViewModelBuilder` class is a widget that facilitates the reactive construction of widgets based on states emitted by a specified `ViewModel`. It is particularly useful for managing the state of Flutter applications in a clean and organized manner. The class is part of a state management package, and its primary purpose is to simplify the process of rebuilding widgets in response to changes in the underlying state.
+
+### Example Usage:
+```dart
+ViewModelBuilder<MyViewModel, MyState>(
+  builder: (context, state) {
+    return MyWidget();
+  },
+)
+```
+
+If the viewModel isn't accessible via a parent `ViewModelProvider` and the current `BuildContext`, it is possible to define using viewModel parameter.
+
+```dart
+ViewModelBuilder<MyViewModel, MyState>(
+  viewModel: myViewModel, // provide local viewModel instance
+  builder: (context, state) {
+    return MyWidget();
+  }
+)
+```
+
+For precise control over when the `builder` function is invoked, you have the option to include an optional parameter called `buildWhen`. This function takes both the previous and current states of the `ViewModel` and returns a boolean value. If `buildWhen` evaluates to true, the `builder` will be executed with the current state, triggering a widget rebuild. Conversely, if `buildWhen` returns false, the `builder` won't be invoked, and no rebuild will take place.
+
+By utilizing the `buildWhen` parameter, you gain fine-grained control over the widget's rebuilding process, allowing you to make decisions based on changes in the underlying state of your `ViewModel`. This enhances flexibility and optimizes the performance of your Flutter application by selectively rebuilding widgets only when necessary.
+
+```dart
+ViewModelBuilder<MyViewModel, MyState>(
+  buildWhen: (previousState, currentState) {
+    // Specify conditions to determine whether or not
+    // to rebuild the widget with the current state.
+    // Return true to trigger a rebuild, or false otherwise.
+  },
+  builder: (context, state) {
+    // Construct and return the widget based on MyViewModel's state.
+  }
+)
+```
+
 ##### Mock ViewModel
 
 ##### Real ViewModel
